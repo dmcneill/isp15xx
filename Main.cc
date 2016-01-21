@@ -69,16 +69,16 @@ static int fileWorker(
     std::string filenameStr = (filename? filename: "");
     int         result = 1;
 
-    LOG( INFO ) << "Entering fileWorker...";
+    LOG(INFO) << "Entering fileWorker...";
     do
     {
-        std::string fileExtension = isp::Utility::ExtractFileExtension( filenameStr );
+        std::string fileExtension = isp::Utility::ExtractFileExtension(filenameStr);
 
-        if( fileExtension == ".hex" )
+        if (fileExtension == ".hex")
         {
-            isp::iHex    intelHexFile( filenameStr.c_str(), gMemory, sizeof( gMemory) );
+            isp::iHex    intelHexFile(filenameStr.c_str(), gMemory, sizeof(gMemory));
 
-            if( intelHexFile.parse() )
+            if (intelHexFile.parse())
             {
                 gStartAddress =  intelHexFile.getStartAddress();
                 gEndAddress   =  intelHexFile.getEndAddress();
@@ -93,11 +93,11 @@ static int fileWorker(
                 result = 0;
             }
         }
-        else if( fileExtension == ".axf" || fileExtension == ".elf" )
+        else if (fileExtension == ".axf" || fileExtension == ".elf")
         {
-            isp::Elf32  elf( filenameStr, gMemory, sizeof( gMemory ));
+            isp::Elf32  elf(filenameStr, gMemory, sizeof(gMemory));
 
-            if( elf.read() && elf.parse( true, gIsVerbose ) )
+            if (elf.read() && elf.parse(true, gIsVerbose))
             {
                 gStartAddress =  elf.getStartAddress();
                 gEndAddress   =  elf.getEndAddress();
@@ -112,11 +112,11 @@ static int fileWorker(
                 result = 0;
             }
         }
-        else if( fileExtension == ".bin" )
+        else if (fileExtension == ".bin")
         {
-            isp::Binary binary( filenameStr, gMemory, sizeof( gMemory ));
+            isp::Binary binary(filenameStr, gMemory, sizeof(gMemory));
 
-            if( binary.read() && binary.parse( true, gIsVerbose ) )
+            if (binary.read() && binary.parse(true, gIsVerbose))
             {
                 gStartAddress =  binary.getStartAddress();
                 gEndAddress   =  binary.getEndAddress();
@@ -131,9 +131,9 @@ static int fileWorker(
                 result = 0;
             }
         }
-    } while( false );
+    } while (false);
 
-    LOG( INFO ) << "Leaving fileWorker: result is " << result;
+    LOG(INFO) << "Leaving fileWorker: result is " << result;
     return result;
 }
 
@@ -151,18 +151,18 @@ static int fileWorker(
 /// @retval     0           Success.
 /// @retval     <other>     Error.
 ///
-static int eraseWorker( const char * device )
+static int eraseWorker(const char * device)
 {
     int result = -1;
 
     do
     {
-        isp::ISP::Error error = isp::eraseClient( device, gSyncRetries );
-        result = static_cast<int>( error );
+        isp::ISP::Error error = isp::eraseClient(device, gSyncRetries);
+        result = static_cast<int>(error);
 
     } while (false);
 
-    LOG( INFO ) << "Leaving eraseWorker: result is " << result;
+    LOG(INFO) << "Leaving eraseWorker: result is " << result;
     return result;
 }
 
@@ -182,18 +182,18 @@ static int eraseWorker( const char * device )
 /// @retval     0           Success.
 /// @retval     <other>     Error.
 ///
-static int examineWorker( const char * device )
+static int examineWorker(const char * device)
 {
     int result = -1;
 
     do
     {
-        isp::ISP::Error error = isp::examineClient( device, gSyncRetries );
-        result = static_cast<int>( error );
+        isp::ISP::Error error = isp::examineClient(device, gSyncRetries);
+        result = static_cast<int>(error);
 
     } while (false);
 
-    LOG( INFO ) << "Leaving examineWorker: result is " << result;
+    LOG(INFO) << "Leaving examineWorker: result is " << result;
     return result;
 }
 
@@ -211,18 +211,18 @@ static int examineWorker( const char * device )
 /// @retval     0           Success.
 /// @retval     <other>     Error.
 ///
-static int clientWorker( const char * device )
+static int clientWorker(const char * device)
 {
     int result = -1;
 
     do
     {
-        isp::ISP::Error error = isp::programClient( device, gSyncRetries );
-        result = static_cast<int>( error );
+        isp::ISP::Error error = isp::programClient(device, gSyncRetries);
+        result = static_cast<int>(error);
 
     } while (false);
 
-    LOG( INFO ) << "Leaving clientWorker: result is " << result;
+    LOG(INFO) << "Leaving clientWorker: result is " << result;
     return result;
 }
 
@@ -235,7 +235,7 @@ static int clientWorker( const char * device )
 ///
 /// @param[in]  event       The signal number for the alarm.
 ///
-void alarmHandler( int event )
+void alarmHandler(int event)
 {
     // Check the event code
     switch (event)
@@ -257,20 +257,20 @@ void alarmHandler( int event )
 ///
 /// @param[in]  event       The signal number; SIGINT or SIGTERM.
 ///
-void termHandler( int event )
+void termHandler(int event)
 {
-    switch( event )
+    switch(event)
     {
         case SIGINT:
         case SIGTERM:
             // Termination request - set the flag
-            if( gIsVerbose )
+            if (gIsVerbose)
             {
-               LOG( INFO ) << "Signal "
-                           << event
-                           << " hit (Termination)";
+               LOG(INFO) << "Signal "
+                         << event
+                         << " hit (Termination)";
             }
-            if( false == gQuit )
+            if (false == gQuit)
             {
                 gQuit = true;
             }
@@ -302,14 +302,14 @@ static void doCommandLine(
 {
     do
     {
-        isp::CmdLine    cmdLine( argc, argv );
+        isp::CmdLine    cmdLine(argc, argv);
         std::string     argument;
         size_t          index = -1;
 
-        if( cmdLine.find( "--device", index ) ||
-            cmdLine.find( "-d", index ))
+        if (cmdLine.find("--device", index) ||
+            cmdLine.find("-d", index))
         {
-            if( !cmdLine.get( index + 1, argument ))
+            if (!cmdLine.get(index + 1, argument))
             {
                 std::cerr << "No device argument found!"
                           << std::endl;
@@ -324,10 +324,10 @@ static void doCommandLine(
             }
         }
 
-        if( cmdLine.find( "--filename", index ) ||
-            cmdLine.find( "-f", index ))
+        if (cmdLine.find("--filename", index) ||
+            cmdLine.find("-f", index))
         {
-            if( !cmdLine.get( index + 1, argument ))
+            if (!cmdLine.get(index + 1, argument))
             {
                 std::cerr << "No filename argument found!"
                           << std::endl;
@@ -342,55 +342,55 @@ static void doCommandLine(
             }
         }
 
-        if( cmdLine.find( "--nogoio", index ) ||
-            cmdLine.find( "-g", index ))
+        if (cmdLine.find("--nogoio", index) ||
+            cmdLine.find("-g", index))
         {
             gNoGPIO = true;
             index = -1;
         }
 
-        if( cmdLine.find( "--help", index ) ||
-            cmdLine.find( "-h", index ))
+        if (cmdLine.find("--help", index) ||
+            cmdLine.find("-h", index))
         {
             error = isp::ISP_HELP_ARGUMENT;
             break;
         }
 
-        if( cmdLine.find( "--erase", index ) ||
-            cmdLine.find( "-e", index ))
+        if (cmdLine.find("--erase", index) ||
+            cmdLine.find("-e", index))
         {
             gOption |= ERASE_OPTION;
             index = -1;
         }
 
-        if( cmdLine.find( "--program", index ) ||
-            cmdLine.find( "-p", index ))
+        if (cmdLine.find("--program", index) ||
+            cmdLine.find("-p", index))
         {
             gOption |= PROGRAM_OPTION;
             index = -1;
         }
 
-        if( cmdLine.find( "--reset", index ) ||
-            cmdLine.find( "-r", index ))
+        if (cmdLine.find("--reset", index) ||
+            cmdLine.find("-r", index))
         {
             gIsActiveLowReset = false;
             index = -1;
         }
 
-        if( cmdLine.find( "--verbose", index ) ||
-            cmdLine.find( "-v", index ))
+        if (cmdLine.find("--verbose", index) ||
+            cmdLine.find("-v", index))
         {
             gIsVerbose = false;
             index = -1;
         }
 
-        if( cmdLine.find( "--examine", index ) ||
-            cmdLine.find( "-x", index ))
+        if (cmdLine.find("--examine", index) ||
+            cmdLine.find("-x", index))
         {
             gOption |= EXAMINE_OPTION;
             index = -1;
         }
-    } while( false );
+    } while (false);
 
     return;
 }
@@ -410,14 +410,14 @@ static void doCommandLine(
 /// @retval     0       Success.
 /// @retval     <other> Unix-style error codes.
 ///
-int main( int argc,
-          char * const argv[] )
+int main(int argc,
+         char * const argv[] )
 {
     isp::tClientErrors error = isp::ISP_NO_ERROR;
     int                returnCode = 0;
 
     // Process the command line arguments
-    doCommandLine( argc, argv, error );
+    doCommandLine(argc, argv, error);
 
     // Check the required arguments
     if ((gOption == 0) && (error != isp::ISP_HELP_ARGUMENT ))
@@ -438,9 +438,9 @@ int main( int argc,
     }
 
     // Test for any error
-    if( error != isp::ISP_NO_ERROR )
+    if (error != isp::ISP_NO_ERROR)
     {
-        switch( error )
+        switch (error)
         {
             case isp::ISP_HELP_ARGUMENT:
             {
@@ -462,21 +462,21 @@ int main( int argc,
                 std::cerr << "  --verbose  | -v    Verbose messages"                << std::endl;
                 std::cerr << "  --examine  | -x    Examine memory"                  << std::endl;
                 std::cerr << "  --help     | -h    Show this help"                  << std::endl;
-                exit( 0 );
+                exit(0);
             }
             break;
 
             case isp::ISP_INVALID_ARGUMENT:
             {
-                LOG( ERROR ) << "Invalid argument";
-                exit( 1 );
+                LOG(ERROR) << "Invalid argument";
+                exit(1);
             }
             break;
 
             default:
             {
-                LOG( ERROR ) << "<Unknown>";
-                exit( 1 );
+                LOG(ERROR) << "<Unknown>";
+                exit(1);
             }
             break;
         }
@@ -484,23 +484,23 @@ int main( int argc,
 
     do
     {
-        isp::Signal sigInt( SIGINT, termHandler );
-        isp::Signal sigTerm( SIGTERM, termHandler );
-        isp::Alarm  alarm( alarmHandler, 4U );
-        isp::Signal sigPipe( SIGPIPE );
+        isp::Signal sigInt(SIGINT, termHandler);
+        isp::Signal sigTerm(SIGTERM, termHandler);
+        isp::Alarm  alarm(alarmHandler, 4U);
+        isp::Signal sigPipe(SIGPIPE);
         bool        isDone = false;
 
         // Setup the LED output
         gLEDPtr = new isp::LED;
 
-        if( gOption & ERASE_OPTION )
+        if (gOption & ERASE_OPTION)
         {
             // Start the erase thread
             std::thread clientThread(eraseWorker, gSerialDevice.c_str());
             isDone = false;
 
             // Update the periodic interval
-            while( gQuit == false && isDone == false )
+            while (gQuit == false && isDone == false)
             {
                 if (clientThread.joinable())
                 {
@@ -510,7 +510,7 @@ int main( int argc,
             }
         }
 
-        if(( gOption & PROGRAM_OPTION ) || ( gOption & EXAMINE_OPTION ))
+        if ((gOption & PROGRAM_OPTION) || (gOption & EXAMINE_OPTION))
         {
             // Start the file thread
             std::future<int> fileThread = std::async(fileWorker, gInputFilename.c_str());
@@ -519,20 +519,20 @@ int main( int argc,
             // Check the status of the file thread
             if (fileWorkerStatus != 0)
             {
-                LOG( ERROR ) << "Error return from file worker thread: "
+                LOG(ERROR) << "Error return from file worker thread: "
                              << fileWorkerStatus;
                 break;
             }
         }
 
-        if( gOption & PROGRAM_OPTION )
+        if (gOption & PROGRAM_OPTION)
         {
             // Start the program thread
             std::thread clientThread(clientWorker, gSerialDevice.c_str());
             isDone = false;
 
             // Update the periodic interval
-            while( gQuit == false && isDone == false )
+            while (gQuit == false && isDone == false)
             {
                 if (clientThread.joinable())
                 {
@@ -542,14 +542,14 @@ int main( int argc,
             }
         }
 
-        if( gOption & EXAMINE_OPTION )
+        if (gOption & EXAMINE_OPTION)
         {
             // Start the program thread
             std::thread examineThread(examineWorker, gSerialDevice.c_str());
             isDone = false;
 
             // Update the periodic interval
-            while( gQuit == false && isDone == false )
+            while (gQuit == false && isDone == false)
             {
                 if (examineThread.joinable())
                 {
@@ -559,9 +559,9 @@ int main( int argc,
             }
         }
 
-        LOG( INFO ) << "Tearing down...";
+        LOG (INFO) << "Tearing down...";
 
-    } while( false );
+    } while (false);
 
     if (gLEDPtr)
     {
@@ -569,11 +569,11 @@ int main( int argc,
         gLEDPtr = nullptr;
     }
 
-    if( gIsVerbose )
+    if (gIsVerbose)
     {
-        LOG( INFO ) << "*** Calling exit("
+        LOG(INFO) << "*** Calling exit("
                     << returnCode
                     << ")";
     }
-    exit( returnCode );
+    exit(returnCode);
 }

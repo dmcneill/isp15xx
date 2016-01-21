@@ -25,7 +25,7 @@ class Signal
 {
 public:
     /// The callback function signature
-    typedef void (* tSigFunc)( int );
+    typedef void (* tSigFunc)(int);
 
     ///
     /// @brief      Set a callback on a UNIX signal.
@@ -37,7 +37,7 @@ public:
     /// @param[in]  callback    The function for the callback; must be
     ///                         of the type tSigFunc.
     ///
-    Signal( int number, tSigFunc callback );
+    Signal(int number, tSigFunc callback);
 
     ///
     /// @brief      Set the default to handle the UNIX signal.
@@ -46,7 +46,7 @@ public:
     ///
     /// @param[in]  number      The signal number to use.
     ///
-    Signal( int number );
+    Signal(int number);
 
     ///
     /// @brief      Signal destructor
@@ -73,7 +73,7 @@ private:
     /// @param[in]  signal      Reference to the Signal object
     ///                         to be copied.
     ///
-    Signal( const Signal& signal ) = delete;
+    Signal(const Signal& signal) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -83,7 +83,7 @@ private:
     /// @param[in]  signal      Reference to the Signal object
     ///                         to be copied.
     ///
-    Signal& operator = ( const Signal& signal ) = delete;
+    Signal& operator = (const Signal& signal) = delete;
 
     //  Data members
     int m_number;

@@ -18,16 +18,16 @@
 //  @brief      Mutex constructor
 //
 isp::Mutex::Mutex ()
-      : m_RefCount( 0 ),
-        m_Error( 0 )
+      : m_RefCount(0),
+        m_Error(0)
 {
-    int result = pthread_mutex_init( &m_Mutex, NULL );
+    int result = pthread_mutex_init(&m_Mutex, NULL);
 
-    if( result )
+    if (result)
     {
         m_Error = result;
-        LOG( ERROR ) << "Pthread mutex init failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread mutex init failed: "
+                   << strerror(result);
     }
 }
 
@@ -37,15 +37,15 @@ isp::Mutex::Mutex ()
 //
 isp::Mutex::~Mutex ()
 {
-    int result = pthread_mutex_destroy( &m_Mutex );
+    int result = pthread_mutex_destroy(&m_Mutex);
 
-    if( result )
+    if (result)
     {
-        LOG( ERROR ) << "Pthread mutex destroy failed: "
-                     << "RefCount="
-                     << m_RefCount
-                     << ' '
-                     << strerror( result );
+        LOG(ERROR) << "Pthread mutex destroy failed: "
+                   << "RefCount="
+                   << m_RefCount
+                   << ' '
+                   << strerror(result);
     }
 }
 
@@ -55,12 +55,12 @@ isp::Mutex::~Mutex ()
 //
 bool isp::Mutex::lock ()
 {
-    int result = pthread_mutex_lock( &m_Mutex );
+    int result = pthread_mutex_lock(&m_Mutex);
 
-    if( result )
+    if (result)
     {
-        LOG( ERROR ) << "Pthread mutex lock failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread mutex lock failed: "
+                   << strerror(result);
     }
     else
     {
@@ -76,12 +76,12 @@ bool isp::Mutex::lock ()
 //
 bool isp::Mutex::trylock ()
 {
-    int result = pthread_mutex_trylock( &m_Mutex );
+    int result = pthread_mutex_trylock(&m_Mutex);
 
-    if( result )
+    if (result)
     {
-        LOG( ERROR ) << "Pthread mutex trylock failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread mutex trylock failed: "
+                   << strerror(result);
     }
     else
     {
@@ -96,12 +96,12 @@ bool isp::Mutex::trylock ()
 //
 bool isp::Mutex::unlock ()
 {
-    int result = pthread_mutex_unlock( &m_Mutex );
+    int result = pthread_mutex_unlock(&m_Mutex);
 
-    if( result )
+    if (result)
     {
-        LOG( ERROR ) << "Pthread mutex unlock failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread mutex unlock failed: "
+                   << strerror(result);
     }
     else
     {
@@ -116,17 +116,17 @@ bool isp::Mutex::unlock ()
 //  @brief      Condition explicit constructor
 //
 isp::Condition::Condition(
-            int value )
-      : m_Value( value ),
-        m_Error( 0 )
+            int value)
+      : m_Value(value),
+        m_Error(0)
 {
-    int result = pthread_cond_init( &m_Cond, NULL );
+    int result = pthread_cond_init(&m_Cond, NULL);
 
-    if( result )
+    if (result)
     {
         m_Error = result;
-        LOG( ERROR ) << "Pthread cond init failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread cond init failed: "
+                   << strerror(result);
     }
 }
 
@@ -136,12 +136,12 @@ isp::Condition::Condition(
 //
 isp::Condition::~Condition()
 {
-    int result = pthread_cond_destroy( &m_Cond );
+    int result = pthread_cond_destroy(&m_Cond);
 
-    if( result )
+    if (result)
     {
-        LOG( ERROR ) << "Pthread cond destroy failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread cond destroy failed: "
+                   << strerror(result);
     }
 }
 
@@ -149,15 +149,15 @@ isp::Condition::~Condition()
 //
 //  @brief      Wait on a condition object.
 //
-bool isp::Condition::wait( Mutex& mutex )
+bool isp::Condition::wait(Mutex& mutex)
 {
-    int result = pthread_cond_wait( &m_Cond, mutex.get() );
+    int result = pthread_cond_wait(&m_Cond, mutex.get());
 
-    if( result )
+    if (result)
     {
         m_Error = result;
-        LOG( ERROR ) << "Pthread cond wait failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread cond wait failed: "
+                   << strerror(result);
     }
     return (m_Error = result? false: true );
 }
@@ -168,13 +168,13 @@ bool isp::Condition::wait( Mutex& mutex )
 //
 bool isp::Condition::signal()
 {
-    int result = pthread_cond_signal( &m_Cond );
+    int result = pthread_cond_signal(&m_Cond);
 
-    if( result )
+    if (result)
     {
         m_Error = result;
-        LOG( ERROR ) << "Pthread cond signal failed: "
-                     << strerror( result );
+        LOG(ERROR) << "Pthread cond signal failed: "
+                   << strerror(result);
     }
     return (m_Error = result? false: true );
 }
@@ -183,7 +183,7 @@ bool isp::Condition::signal()
 //
 //  @brief      Copy constructor
 //
-isp::Condition::Condition( const isp::Condition& cond )
+isp::Condition::Condition(const isp::Condition& cond)
 {
     this->m_Cond  = cond.m_Cond;
     this->m_Value = cond.m_Value;
@@ -194,7 +194,7 @@ isp::Condition::Condition( const isp::Condition& cond )
 //
 //  @brief      Assignment operator
 //
-isp::Condition& isp::Condition::operator = ( const isp::Condition& cond )
+isp::Condition& isp::Condition::operator = (const isp::Condition& cond)
 {
     this->m_Cond  = cond.m_Cond;
     this->m_Value = cond.m_Value;

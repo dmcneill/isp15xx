@@ -77,9 +77,9 @@ public:
     /// @param[in]  isVerbose
     ///             The boolean flag for the debug verbosity.
     ///
-    ISP( isp::Serial&   serial,
-         bool           isActiveLowReset = true,
-         bool           isVerbose = false );
+    ISP(isp::Serial& serial,
+         bool isActiveLowReset = true,
+         bool isVerbose = false);
 
     ///
     /// @brief      Default destructor for the ISP class.
@@ -105,7 +105,7 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error.
     ///
-    Error synchronize( bool isVerbose = false );
+    Error synchronize(bool isVerbose = false);
 
 
     ///
@@ -124,10 +124,10 @@ public:
     /// @param[in]  isVerbose
     ///             The flag for the verbosity level.
     ///
-    Error setBaudRate( unsigned baud,
-                       unsigned stopBits = 1,
-                       unsigned timeoutInMS = SHORT_TIMEOUT,
-                       bool isVerbose = false );
+    Error setBaudRate(unsigned baud,
+                      unsigned stopBits = 1,
+                      unsigned timeoutInMS = SHORT_TIMEOUT,
+                      bool isVerbose = false);
 
     ///
     /// @brief      Query the chip identifier for the target.
@@ -144,9 +144,9 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error.
     ///
-    Error queryId( uint32_t& chipId,
-                   unsigned timeoutInMS = MINIMAL_TIMEOUT,
-                   bool isVerbose = false );
+    Error queryId(uint32_t& chipId,
+                  unsigned timeoutInMS = MINIMAL_TIMEOUT,
+                  bool isVerbose = false);
 
     ///
     /// @brief      Get the unique identifier for the target chip.
@@ -163,9 +163,9 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error queryUID( std::vector<std::string>& vec,
-                    unsigned timeoutInMS = MINIMAL_TIMEOUT,
-                    bool isVerbose = false );
+    Error queryUID(std::vector<std::string>& vec,
+                   unsigned timeoutInMS = MINIMAL_TIMEOUT,
+                   bool isVerbose = false);
 
     ///
     /// @brief      Get the bootloader version for the target chip.
@@ -182,9 +182,9 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error queryBootloaderVersion( std::vector<std::string>& vec,
-                                  unsigned timeoutInMS = MINIMAL_TIMEOUT,
-                                  bool isVerbose = false );
+    Error queryBootloaderVersion(std::vector<std::string>& vec,
+                                 unsigned timeoutInMS = MINIMAL_TIMEOUT,
+                                 bool isVerbose = false);
 
     ///
     /// @brief      Read the CRC checksum starting at the given address for the
@@ -208,11 +208,11 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error queryCRC( uint32_t address,
-                    size_t size,
-                    uint32_t& crc,
-                    unsigned timeoutInMS = SHORT_TIMEOUT,
-                    bool isVerbose = false );
+    Error queryCRC(uint32_t address,
+                   size_t size,
+                   uint32_t& crc,
+                   unsigned timeoutInMS = SHORT_TIMEOUT,
+                   bool isVerbose = false);
 
     ///
     /// @brief      Unlock flash for the target chip.
@@ -226,8 +226,8 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error unlockFlash( unsigned timeoutInMS = MEDIUM_TIMEOUT,
-                       bool isVerbose = false );
+    Error unlockFlash(unsigned timeoutInMS = MEDIUM_TIMEOUT,
+                      bool isVerbose = false);
 
     ///
     /// @brief      Prepare flash sectors for write operations.
@@ -247,10 +247,10 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error prepareSectors( unsigned start,
-                          unsigned end,
-                          unsigned timeoutInMS = MEDIUM_TIMEOUT,
-                          bool isVerbose = false );
+    Error prepareSectors(unsigned start,
+                         unsigned end,
+                         unsigned timeoutInMS = MEDIUM_TIMEOUT,
+                         bool isVerbose = false);
 
     ///
     /// @brief      Erase flash sectors.
@@ -270,10 +270,10 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error eraseSectors( unsigned start,
-                        unsigned end,
-                        unsigned timeoutInMS = LONG_TIMEOUT,
-                        bool isVerbose = false );
+    Error eraseSectors(unsigned start,
+                       unsigned end,
+                       unsigned timeoutInMS = LONG_TIMEOUT,
+                       bool isVerbose = false);
 
     ///
     /// @brief      Blank check flash sectors.
@@ -293,10 +293,10 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error blankCheckSector( unsigned sector,
-                            std::vector<bool>& sectorMap,
-                            unsigned timeoutInMS = SHORT_TIMEOUT,
-                            bool isVerbose = false );
+    Error blankCheckSector(unsigned sector,
+                           std::vector<bool>& sectorMap,
+                           unsigned timeoutInMS = SHORT_TIMEOUT,
+                           bool isVerbose = false);
 
     ///
     /// @brief      Read memory from the target device.
@@ -319,11 +319,11 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error readMemory( uint32_t address,
-                      size_t size,
-                      std::vector<uint8_t>& vec,
-                      unsigned timeoutInMS = LONG_TIMEOUT,
-                      bool isVerbose = false );
+    Error readMemory(uint32_t address,
+                     size_t size,
+                     std::vector<uint8_t>& vec,
+                     unsigned timeoutInMS = LONG_TIMEOUT,
+                     bool isVerbose = false);
 
     ///
     /// @brief      Enable / disable command echoing from the target.
@@ -340,9 +340,9 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error.
     ///
-    Error echo( bool enable,
-                unsigned timeoutInMS = MEDIUM_TIMEOUT,
-                bool isVerbose = false );
+    Error echo(bool enable,
+               unsigned timeoutInMS = MEDIUM_TIMEOUT,
+               bool isVerbose = false);
 
     ///
     /// @brief      Copy RAM to flash memory (program flash)
@@ -362,11 +362,11 @@ public:
     /// @param[in]  isVerbose
     ///             The flag for the verbosity level.
     ///
-    Error copyToFlash( uint32_t flash,
-                       uint32_t address,
-                       size_t size,
-                       unsigned timeoutInMS = LONG_TIMEOUT,
-                       bool isVerbose = false );
+    Error copyToFlash(uint32_t flash,
+                      uint32_t address,
+                      size_t size,
+                      unsigned timeoutInMS = LONG_TIMEOUT,
+                      bool isVerbose = false);
 
     ///
     /// @brief      Execute starting at a given address.
@@ -383,9 +383,9 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error.
     ///
-    Error execute( uint32_t address,
-                   unsigned timeoutInMS = MEDIUM_TIMEOUT,
-                   bool isVerbose = false );
+    Error execute(uint32_t address,
+                  unsigned timeoutInMS = MEDIUM_TIMEOUT,
+                  bool isVerbose = false);
 
     ///
     /// @brief      Write memory to the target device.
@@ -408,11 +408,11 @@ public:
     /// @return     The error code for the operation where zero is success and
     ///             any other value is an error
     ///
-    Error writeMemory( uint32_t address,
-                       size_t size,
-                       std::vector<uint8_t>& vec,
-                       unsigned timeoutInMS = MEDIUM_TIMEOUT,
-                       bool isVerbose = false );
+    Error writeMemory(uint32_t address,
+                      size_t size,
+                      std::vector<uint8_t>& vec,
+                      unsigned timeoutInMS = MEDIUM_TIMEOUT,
+                      bool isVerbose = false);
 
 protected:
     ///
@@ -440,11 +440,11 @@ protected:
     ///             -1:     Error encountered.
     ///             -2:     Timeout
     ///
-    ssize_t send( const std::string& command,
-                  std::string& response,
-                  unsigned timeoutInMS,
-                  bool isVerbose = false,
-                  int retryCount = 3 );
+    ssize_t send(const std::string& command,
+                 std::string& response,
+                 unsigned timeoutInMS,
+                 bool isVerbose = false,
+                 int retryCount = 3);
 
     ///
     /// @brief      Send a command to the serial interface and get a response.
@@ -474,12 +474,12 @@ protected:
     ///             -1:     Error encountered.
     ///             -2:     Timeout
     ///
-    ssize_t send( const std::string& command,
-                  std::string& response,
-                  std::string& testResponse,
-                  unsigned timeoutInMS,
-                  bool isVerbose = false,
-                  int retryCount = 3 );
+    ssize_t send(const std::string& command,
+                 std::string& response,
+                 std::string& testResponse,
+                 unsigned timeoutInMS,
+                 bool isVerbose = false,
+                 int retryCount = 3);
 
     ///
     /// @brief      Send a command to the serial interface and get a response.
@@ -509,12 +509,12 @@ protected:
     ///             -1:     Error encountered.
     ///             -2:     Timeout
     ///
-    ssize_t send( const std::string& command,
-                  std::vector<uint8_t>& response,
-                  std::string& testResponse,
-                  unsigned timeoutInMS,
-                  bool isVerbose = false,
-                  int retryCount = 3 );
+    ssize_t send(const std::string& command,
+                 std::vector<uint8_t>& response,
+                 std::string& testResponse,
+                 unsigned timeoutInMS,
+                 bool isVerbose = false,
+                 int retryCount = 3);
 
     ///
     /// @brief      Send a set of bytes from a vector to the serial interface
@@ -533,8 +533,8 @@ protected:
     ///             -1:     Error encountered.
     ///             -2:     Timeout
     ///
-    ssize_t send( std::vector<uint8_t>& bytes,
-                  bool isVerbose = false );
+    ssize_t send(std::vector<uint8_t>& bytes,
+                 bool isVerbose = false);
 
 private:
     ///
@@ -553,7 +553,7 @@ private:
     /// @param[in]  ref
     ///             Reference to an ISP instance to copy from.
     ///
-    ISP( const ISP& ref ) = delete;
+    ISP(const ISP& ref) = delete;
 
     ///
     /// @brief      ISP assignment operator (not-assignable)
@@ -565,7 +565,7 @@ private:
     ///
     /// @return     New instance for the left-hand side of the expression.
     ///
-    ISP& operator = ( const ISP& ref ) = delete;
+    ISP& operator = (const ISP& ref) = delete;
 
     ///
     /// @brief      Open up a HW signal for access.
@@ -576,7 +576,7 @@ private:
     ///
     /// @return     The signal's file descriptor on success or neg on on error.
     ///
-    int hwSignalOpen( const char * signal );
+    int hwSignalOpen(const char * signal);
 
     ///
     /// @brief      Close down a HW signal from access.
@@ -588,8 +588,8 @@ private:
     ///             The signal name string to use to access the signal
     ///             through GPIO.
     ///
-    void hwSignalClose( int fd,
-                        const char * signal );
+    void hwSignalClose(int fd,
+                       const char * signal);
 
     ///
     /// @brief      Set a signal to a given state.
@@ -604,9 +604,9 @@ private:
     /// @param[in]  value
     ///             The boolean value to use on the signal.
     ///
-    void hwSignalSet( int fd,
-                      const char * signal,
-                      bool value );
+    void hwSignalSet(int fd,
+                     const char * signal,
+                     bool value);
 
     // Data members
     isp::Serial&    mSerial;

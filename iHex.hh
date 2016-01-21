@@ -39,7 +39,7 @@ public:
     /// @param[in]  size
     ///             The size of the memory block in bytes.
     ///
-    iHex( const char * filename, uint8_t * pMemory, size_t size );
+    iHex(const char * filename, uint8_t * pMemory, size_t size);
 
     ///
     /// @brief      Default destructor.
@@ -111,7 +111,7 @@ private:
     /// @param[in]  ihex        Reference to the Intel Hex object
     ///                         to be copied.
     ///
-    iHex( const iHex& ihex ) = delete;
+    iHex(const iHex& ihex) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -121,7 +121,7 @@ private:
     /// @param[in]  ihex        Reference to the Intel Hex object
     ///                         to be copied.
     ///
-    iHex& operator = ( const iHex& ihex ) = delete;
+    iHex& operator = (const iHex& ihex) = delete;
 
     //  Data Members
     std::string     mFilename;

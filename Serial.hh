@@ -80,10 +80,10 @@ public:
     /// @return     The number of bytes read into the buffer.  Set to a
     ///             negative number on error.
     ///
-    ssize_t read( std::string& str,
-                  unsigned timeoutInMS,
-                  unsigned& readTime,
-                  bool isVerbose = false );
+    ssize_t read(std::string& str,
+                 unsigned timeoutInMS,
+                 unsigned& readTime,
+                 bool isVerbose = false);
 
     ///
     /// @brief      Read an input vector of bytes from the Serial port.
@@ -103,10 +103,10 @@ public:
     /// @return     The number of bytes read into the vector.  Set to a
     ///             negative number on error.
     ///
-    ssize_t read( std::vector<uint8_t>& bVector,
-                  unsigned timeoutInMS,
-                  unsigned& readTime,
-                  bool isVerbose = false );
+    ssize_t read(std::vector<uint8_t>& bVector,
+                 unsigned timeoutInMS,
+                 unsigned& readTime,
+                 bool isVerbose = false);
 
     ///
     /// @brief      Write an output buffer to the Serial port.
@@ -130,7 +130,7 @@ public:
     /// @return     The number of bytes read from the string.  Set to a
     ///             negative number on error.
     ///
-    ssize_t write( const std::string& str );
+    ssize_t write(const std::string& str);
 
     ///
     /// @brief      Write an output byte vector to the Serial port.
@@ -141,7 +141,7 @@ public:
     /// @return     The number of bytes read from the vector.  Set to a
     ///             negative number on error.
     ///
-    ssize_t write( const std::vector<uint8_t>& vec );
+    ssize_t write(const std::vector<uint8_t>& vec);
 
     ///
     /// @brief      Get the current error state.
@@ -167,7 +167,7 @@ private:
     /// @param[in]  serial      Reference to the Serial object
     ///                         to be copied.
     ///
-    Serial( const Serial& serial ) = delete;
+    Serial(const Serial& serial) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -177,7 +177,7 @@ private:
     /// @param[in]  serial      Reference to the Serial object
     ///                         to be copied.
     ///
-    Serial& operator = ( const Serial& serial ) = delete;
+    Serial& operator = (const Serial& serial) = delete;
 
     ///
     /// @brief      Get the file descriptor.
@@ -205,10 +205,10 @@ private:
     /// @return     The number of bytes read into the buffer.  Set to a
     ///             negative number on error.
     ///
-    ssize_t read( char * pBuffer,
-                  size_t size,
-                  unsigned timeInMS,
-                  unsigned& readTime );
+    ssize_t read(char * pBuffer,
+                 size_t size,
+                 unsigned timeInMS,
+                 unsigned& readTime);
 
     // Data Members
     int             mError;

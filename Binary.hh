@@ -26,7 +26,7 @@ public:
     ///
     /// @param[in]  memSize     The size of the output block in bytes.
     ///
-    Binary( std::string& filename, uint8_t * pMemory, size_t memSize );
+    Binary(std::string& filename, uint8_t * pMemory, size_t memSize);
 
     ///
     /// @brief      Binary destructor.
@@ -42,7 +42,7 @@ public:
     ///
     /// @return     Boolean true on success and false on error.
     ///
-    bool parse( bool isCheck, bool isDebug );
+    bool parse(bool isCheck, bool isDebug);
 
     ///
     /// @brief      See if the binary file needs to be written.
@@ -103,7 +103,7 @@ private:
     /// @param[in]  binary      Reference to the Binary object
     ///                         to be copied.
     ///
-    Binary( const Binary& binary ) = delete;
+    Binary(const Binary& binary) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -113,7 +113,7 @@ private:
     /// @param[in]  binary      Reference to the Binary object
     ///                         to be copied.
     ///
-    Binary& operator = ( const Binary& binary ) = delete;
+    Binary& operator = (const Binary& binary) = delete;
 
     ///
     /// @brief      Calculate a checksum at the starting address for a
@@ -125,7 +125,7 @@ private:
     ///
     /// @return     The checksum 32-bit value.
     ///
-    uint32_t calculateChecksum ( uint32_t * pAddress, size_t size );
+    uint32_t calculateChecksum(uint32_t * pAddress, size_t size);
 
     // Data members
     std::string     m_filename;

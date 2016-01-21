@@ -22,34 +22,34 @@ using namespace std;
 ///
 /// @brief      Elf32 constructor.
 ///
-isp::Elf32::Elf32( std::string& filename,
-                   uint8_t * pMemory,
-                   size_t memSize )
-     : m_filename( filename ),
-       m_Size( 0U ),
-       m_pBuffer( nullptr ),
-       m_isDirty( false ),
-       m_pMemory( pMemory ),
-       m_StartAddress( 0U ),
-       m_EndAddress( 0U )
+isp::Elf32::Elf32(std::string& filename,
+                  uint8_t * pMemory,
+                  size_t memSize)
+     : m_filename(filename),
+       m_Size(0U),
+       m_pBuffer(nullptr),
+       m_isDirty(false),
+       m_pMemory(pMemory),
+       m_StartAddress(0U),
+       m_EndAddress(0U)
 {
     if (filename.size())
     {
         // Open the file
-        m_ifs.open( m_filename, ios::binary );
+        m_ifs.open(m_filename, ios::binary);
 
-        if( m_ifs.is_open() && m_ifs.good() )
+        if (m_ifs.is_open() && m_ifs.good())
         {
             // get length of file:
-            m_ifs.seekg( 0, ios::end );
+            m_ifs.seekg(0, ios::end);
             m_Size = m_ifs.tellg();
-            m_ifs.seekg( 0, ios::beg );
+            m_ifs.seekg(0, ios::beg);
 
             m_pBuffer = new uint8_t[ m_Size ];
         }
-        else if( !m_ifs.is_open() )
+        else if (!m_ifs.is_open())
         {
-            LOG( ERROR ) << "Error: Cannot open file "
+            LOG(ERROR) << "Error: Cannot open file "
                          << m_filename;
         }
     }
@@ -72,7 +72,7 @@ isp::Elf32::~Elf32()
 ///
 /// @brief      Parse the ELF32 header.
 ///
-bool isp::Elf32::parse( bool isCheck, bool isDebug )
+bool isp::Elf32::parse(bool isCheck, bool isDebug)
 {
     Elf32_Ehdr *    p2Header = (Elf32_Ehdr *) m_pBuffer;
     int             i;
@@ -111,42 +111,42 @@ bool isp::Elf32::parse( bool isCheck, bool isDebug )
                 case SHT_PROGBITS:
                     if (p2Section->sh_size && (p2Section->sh_flags & SHF_ALLOC))
                     {
-                        if( !strncmp(&p2Strings[p2Section->sh_name], ".text", 5))
+                        if (!strncmp(&p2Strings[p2Section->sh_name], ".text", 5))
                         {
                             m_StartAddress = p2Section->sh_addr;
                             m_EndAddress   = p2Section->sh_addr + p2Section->sh_size - 1;
 
-                            LOG( INFO ) << "Start: 0x" << hex << setw(8) << setfill('0')
+                            LOG(INFO) << "Start: 0x" << hex << setw(8) << setfill('0')
                                         << m_StartAddress
                                         << "  End: 0x" << hex << setw(8) << setfill('0')
                                         << m_EndAddress;
 
-                            if( isCheck )
+                            if (isCheck)
                             {
                                 uint32_t checksum = calculateChecksum(reinterpret_cast<uint32_t *>(m_pBuffer + p2Section->sh_offset),
                                                                       p2Section->sh_size);
-                                LOG( INFO ) << "CHECKSUM is 0x" << hex << setw(8) << setfill('0')
+                                LOG(INFO) << "CHECKSUM is 0x" << hex << setw(8) << setfill('0')
                                             << checksum;
                             }
 
-                            memcpy( m_pMemory + p2Section->sh_addr,
-                                    m_pBuffer + p2Section->sh_offset,
-                                    p2Section->sh_size );
+                            memcpy(m_pMemory + p2Section->sh_addr,
+                                   m_pBuffer + p2Section->sh_offset,
+                                   p2Section->sh_size );
                         }
 
-                        if( !strncmp(&p2Strings[p2Section->sh_name], ".data", 5))
+                        if (!strncmp(&p2Strings[p2Section->sh_name], ".data", 5))
                         {
-                            uint32_t mNextAddress = isp::Elf32::alignAddress( m_EndAddress, p2Section->sh_addralign );
-                            memcpy( m_pMemory + mNextAddress,
-                                    m_pBuffer + p2Section->sh_offset,
-                                    p2Section->sh_size );
+                            uint32_t mNextAddress = isp::Elf32::alignAddress(m_EndAddress, p2Section->sh_addralign);
+                            memcpy(m_pMemory + mNextAddress,
+                                   m_pBuffer + p2Section->sh_offset,
+                                   p2Section->sh_size);
 
                             m_EndAddress = mNextAddress + p2Section->sh_size - 1;
 
-                            LOG( INFO ) << "Start: 0x" << hex << setw(8) << setfill('0')
-                                        << m_StartAddress
-                                        << "  End: 0x" << hex << setw(8) << setfill('0')
-                                        << m_EndAddress;
+                            LOG(INFO) << "Start: 0x" << hex << setw(8) << setfill('0')
+                                      << m_StartAddress
+                                      << "  End: 0x" << hex << setw(8) << setfill('0')
+                                      << m_EndAddress;
                         }
                     }
                     break;
@@ -169,9 +169,9 @@ bool isp::Elf32::parse( bool isCheck, bool isDebug )
 ///
 bool isp::Elf32::read()
 {
-    if( m_ifs.is_open() && m_ifs.good() && m_pBuffer && m_Size)
+    if (m_ifs.is_open() && m_ifs.good() && m_pBuffer && m_Size)
     {
-        m_ifs.read( reinterpret_cast<char *>( m_pBuffer), m_Size );
+        m_ifs.read(reinterpret_cast<char *>(m_pBuffer), m_Size);
         return true;
     }
     return false;
@@ -186,17 +186,17 @@ bool isp::Elf32::write()
     bool result = false;
 
     // Open the file
-    m_ofs.open( m_filename, ios::binary );
+    m_ofs.open(m_filename, ios::binary);
 
     // Write the content
-    if( m_ofs.is_open() && m_ofs.good())
+    if (m_ofs.is_open() && m_ofs.good())
     {
-        m_ofs.write( reinterpret_cast<char *>( m_pBuffer), m_Size );
+        m_ofs.write(reinterpret_cast<char *>(m_pBuffer), m_Size);
         result = true;
     }
 
     // Close the file
-    if( m_ofs.is_open() )
+    if (m_ofs.is_open())
         m_ofs.close();
     return result;
 }
@@ -209,7 +209,7 @@ bool isp::Elf32::write()
 ///
 /// @brief      Align an address value.
 ///
-uint32_t isp::Elf32::alignAddress( uint32_t address, unsigned align )
+uint32_t isp::Elf32::alignAddress(uint32_t address, unsigned align)
 {
     uint32_t newAddress;
 
@@ -229,7 +229,7 @@ uint32_t isp::Elf32::alignAddress( uint32_t address, unsigned align )
 ///
 /// @brief      Convert integer value to string.
 ///
-std::string& isp::Elf32::intToString( std::string& str, int type )
+std::string& isp::Elf32::intToString(std::string& str, int type)
 {
    std::stringstream out;
    out << hex << type;
@@ -241,7 +241,7 @@ std::string& isp::Elf32::intToString( std::string& str, int type )
 ///
 /// @brief      Convert section-type integer value to string.
 ///
-std::string& isp::Elf32::sectionType( std::string& str, unsigned type )
+std::string& isp::Elf32::sectionType(std::string& str, unsigned type)
 {
    str = "";
    switch (type)
@@ -277,7 +277,7 @@ std::string& isp::Elf32::sectionType( std::string& str, unsigned type )
       case 0x7FFFFFFF: str = "HIPROC"; break;
       case 0x80000000: str = "LOUSER"; break;
       case 0x8FFFFFFF: str = "HIUSER"; break;
-      default: intToString( str, type ); break;
+      default: intToString(str, type); break;
    }
    return str;
 }
@@ -286,7 +286,7 @@ std::string& isp::Elf32::sectionType( std::string& str, unsigned type )
 ///
 /// @brief      Convert class-type integer value to string.
 ///
-std::string& isp::Elf32::classToString( std::string& str, int classType )
+std::string& isp::Elf32::classToString(std::string& str, int classType)
 {
    str = "";
    switch (classType)
@@ -303,7 +303,7 @@ std::string& isp::Elf32::classToString( std::string& str, int classType )
 ///
 /// @brief      Convert encoding-type integer value to string.
 ///
-std::string& isp::Elf32::encodingToString( std::string& str, int encoding )
+std::string& isp::Elf32::encodingToString(std::string& str, int encoding)
 {
    str = "";
    switch (encoding)
@@ -320,7 +320,7 @@ std::string& isp::Elf32::encodingToString( std::string& str, int encoding )
 ///
 /// @brief      Convert version integer value to string.
 ///
-std::string& isp::Elf32::versionToString( std::string& str, int version )
+std::string& isp::Elf32::versionToString(std::string& str, int version)
 {
    str = "";
    switch (version)
@@ -336,7 +336,7 @@ std::string& isp::Elf32::versionToString( std::string& str, int version )
 ///
 /// @brief      Convert OS-ABI integer value to string.
 ///
-std::string& isp::Elf32::osABItoString( std::string& str, int osABI )
+std::string& isp::Elf32::osABItoString(std::string& str, int osABI)
 {
    str = "";
    switch (osABI)
@@ -364,7 +364,7 @@ std::string& isp::Elf32::osABItoString( std::string& str, int osABI )
 ///
 /// @brief      Convert type integer value to string.
 ///
-std::string& isp::Elf32::typeToString( std::string& str, int type )
+std::string& isp::Elf32::typeToString(std::string& str, int type)
 {
    str = "";
    switch (type)
@@ -383,7 +383,7 @@ std::string& isp::Elf32::typeToString( std::string& str, int type )
 ///
 /// @brief      Convert machine-type integer value to string.
 ///
-std::string& isp::Elf32::machineToString( std::string& str, int machine )
+std::string& isp::Elf32::machineToString(std::string& str, int machine)
 {
    str = "";
    switch (machine)
@@ -472,7 +472,7 @@ std::string& isp::Elf32::machineToString( std::string& str, int machine )
 ///
 /// @brief      Convert section-flags integer value to string.
 ///
-std::string& isp::Elf32::flagsToString( std::string& str, int flags )
+std::string& isp::Elf32::flagsToString(std::string& str, int flags)
 {
    str = "";
 
@@ -499,7 +499,7 @@ std::string& isp::Elf32::flagsToString( std::string& str, int flags )
    }
    str += '(';
    std::string n;
-   intToString( n, flags );
+   intToString(n, flags);
    str += n;
    str += ')';
    return str;
@@ -515,7 +515,7 @@ std::string& isp::Elf32::flagsToString( std::string& str, int flags )
 ///
 /// @return     The reference to the output string.
 ///
-std::string& isp::Elf32::programTypeToString( std::string& str, int type )
+std::string& isp::Elf32::programTypeToString(std::string& str, int type)
 {
    str = "";
    switch (type)
@@ -546,7 +546,7 @@ std::string& isp::Elf32::programTypeToString( std::string& str, int type )
 ///
 /// @brief      Convert program-flags integer value to string.
 ///
-std::string& isp::Elf32::programFlagsToString( std::string& str, int flags )
+std::string& isp::Elf32::programFlagsToString(std::string& str, int flags)
 {
    str = "";
 
@@ -569,7 +569,7 @@ std::string& isp::Elf32::programFlagsToString( std::string& str, int flags )
 ///
 /// @brief      Convert section-flags integer value to string.
 ///
-std::string& isp::Elf32::sectionFlagsToString( std::string& str, int flags )
+std::string& isp::Elf32::sectionFlagsToString(std::string& str, int flags)
 {
    str = "";
 
@@ -587,7 +587,7 @@ std::string& isp::Elf32::sectionFlagsToString( std::string& str, int flags )
    }
    str += '(';
    std::string n;
-   intToString( n, flags );
+   intToString(n, flags);
    str += n;
    str += ')';
    return str;
@@ -597,127 +597,127 @@ std::string& isp::Elf32::sectionFlagsToString( std::string& str, int flags )
 ///
 /// @brief      Display the ELF file header content.
 ///
-void isp::Elf32::elfHeader( Elf32_Ehdr * p2Header )
+void isp::Elf32::elfHeader(Elf32_Ehdr * p2Header)
 {
     std::string str;
 
-    LOG( INFO ) << "ELF Ident / Magic........................: ."
-                << p2Header->e_ident[1]
-                << p2Header->e_ident[2]
-                << p2Header->e_ident[3];
-    LOG( INFO ) << " Class...................................: "
-                << isp::Elf32::classToString( str, p2Header->e_ident[4] );
-    LOG( INFO ) << " Encoding................................: "
-                << isp::Elf32::encodingToString( str, p2Header->e_ident[5] );
-    LOG( INFO ) << " Version.................................: "
-                << isp::Elf32::versionToString( str, p2Header->e_ident[6] );
-    LOG( INFO ) <<" OS ABI..................................: "
-                << isp::Elf32::osABItoString( str, p2Header->e_ident[7] );
-    LOG( INFO ) <<" ABI Version.............................: "
-                << (int) p2Header->e_ident[8];
-    LOG( INFO ) <<" Pad Index...............................: "
-                << (int) p2Header->e_ident[9];
-    LOG( INFO ) <<"ELF Type.................................: "
-                << isp::Elf32::typeToString( str, p2Header->e_type );
-    LOG( INFO ) <<"ELF Machine..............................: "
-                << isp::Elf32::machineToString( str, p2Header->e_machine );
-    LOG( INFO ) <<"ELF Version..............................: "
-                << isp::Elf32::versionToString( str, p2Header->e_version );
-    LOG( INFO ) <<"ELF Entry Address........................: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Header->e_entry;
-    LOG( INFO ) <<"ELF Program Header Offset................: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Header->e_phoff;
-    LOG( INFO ) <<"ELF Section Header Offset................: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Header->e_shoff;
-    LOG( INFO ) <<"ELF Flags................................: "
-                << isp::Elf32::flagsToString( str, p2Header->e_flags );
-    LOG( INFO ) <<"ELF Section Header Size..................: "
-                << p2Header->e_ehsize;
-    LOG( INFO ) <<"ELF Program Header Entry Size............: "
-                << p2Header->e_phentsize;
-    LOG( INFO ) <<"ELF Number of Program Header Entries.....: "
-                << p2Header->e_phnum;
-    LOG( INFO ) <<"ELF Section Header Entry Size............: "
-                << p2Header->e_shentsize;
-    LOG( INFO ) <<"ELF Number of Section Header Entries.....: "
-                << p2Header->e_shnum;
-    LOG( INFO ) <<"ELF Section Name String Table Index......: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Header->e_shstrndx;
+    LOG(INFO) << "ELF Ident / Magic........................: ."
+              << p2Header->e_ident[1]
+              << p2Header->e_ident[2]
+              << p2Header->e_ident[3];
+    LOG(INFO) << " Class...................................: "
+              << isp::Elf32::classToString(str, p2Header->e_ident[4]);
+    LOG(INFO) << " Encoding................................: "
+              << isp::Elf32::encodingToString(str, p2Header->e_ident[5]);
+    LOG(INFO) << " Version.................................: "
+              << isp::Elf32::versionToString(str, p2Header->e_ident[6]);
+    LOG(INFO) <<" OS ABI..................................: "
+              << isp::Elf32::osABItoString(str, p2Header->e_ident[7]);
+    LOG(INFO) <<" ABI Version.............................: "
+              << (int) p2Header->e_ident[8];
+    LOG(INFO) <<" Pad Index...............................: "
+              << (int) p2Header->e_ident[9];
+    LOG(INFO) <<"ELF Type.................................: "
+              << isp::Elf32::typeToString(str, p2Header->e_type);
+    LOG(INFO) <<"ELF Machine..............................: "
+              << isp::Elf32::machineToString(str, p2Header->e_machine);
+    LOG(INFO) <<"ELF Version..............................: "
+              << isp::Elf32::versionToString(str, p2Header->e_version);
+    LOG(INFO) <<"ELF Entry Address........................: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Header->e_entry;
+    LOG(INFO) <<"ELF Program Header Offset................: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Header->e_phoff;
+    LOG(INFO) <<"ELF Section Header Offset................: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Header->e_shoff;
+    LOG(INFO) <<"ELF Flags................................: "
+              << isp::Elf32::flagsToString(str, p2Header->e_flags);
+    LOG(INFO) <<"ELF Section Header Size..................: "
+              << p2Header->e_ehsize;
+    LOG(INFO) <<"ELF Program Header Entry Size............: "
+              << p2Header->e_phentsize;
+    LOG(INFO) <<"ELF Number of Program Header Entries.....: "
+              << p2Header->e_phnum;
+    LOG(INFO) <<"ELF Section Header Entry Size............: "
+              << p2Header->e_shentsize;
+    LOG(INFO) <<"ELF Number of Section Header Entries.....: "
+              << p2Header->e_shnum;
+    LOG(INFO) <<"ELF Section Name String Table Index......: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Header->e_shstrndx;
 }
 
 
 ///
 /// @brief      Display the ELF file program content.
 ///
-void isp::Elf32::program( Elf32_Phdr * p2Program )
+void isp::Elf32::program(Elf32_Phdr * p2Program)
 {
     std::string str;
 
-    LOG( INFO ) << " Program Type............................: "
-                << isp::Elf32::programTypeToString( str, p2Program->p_type );
-    LOG( INFO ) << " Program Segment File Offset.............: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Program->p_offset;
-    LOG( INFO ) << " Program Virtual Address.................: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Program->p_vaddr;
-    LOG( INFO ) << " Program Physical Address................: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Program->p_paddr;
-    LOG( INFO ) << " Program Segment File Size...............: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Program->p_filesz;
-    LOG( INFO ) << " Program Segment Memory Size.............: "
-                << "0x" << hex << setw(8) << setfill('0')
-                << p2Program->p_memsz;
-    LOG( INFO ) << " Program Segment Flags...................: "
-                << isp::Elf32::programFlagsToString( str, p2Program->p_flags );
-    LOG( INFO ) << " Program Segment Alignment...............: "
-                << p2Program->p_align;
+    LOG(INFO) << " Program Type............................: "
+              << isp::Elf32::programTypeToString(str, p2Program->p_type);
+    LOG(INFO) << " Program Segment File Offset.............: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Program->p_offset;
+    LOG(INFO) << " Program Virtual Address.................: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Program->p_vaddr;
+    LOG(INFO) << " Program Physical Address................: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Program->p_paddr;
+    LOG(INFO) << " Program Segment File Size...............: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Program->p_filesz;
+    LOG(INFO) << " Program Segment Memory Size.............: "
+              << "0x" << hex << setw(8) << setfill('0')
+              << p2Program->p_memsz;
+    LOG(INFO) << " Program Segment Flags...................: "
+              << isp::Elf32::programFlagsToString(str, p2Program->p_flags);
+    LOG(INFO) << " Program Segment Alignment...............: "
+              << p2Program->p_align;
 }
 
 
 ///
 /// @brief      Display the ELF section header content.
 ///
-void isp::Elf32::section( Elf32_Shdr * p2Section, char * p2Strings )
+void isp::Elf32::section(Elf32_Shdr * p2Section, char * p2Strings)
 {
     std::string typeStr;
     std::string str;
-    sectionType( typeStr, (int) p2Section->sh_type );
+    sectionType(typeStr, (int) p2Section->sh_type);
 
-    LOG( INFO );
-    LOG( INFO ) << " Section Type............................: "
-                << typeStr;
+    LOG(INFO);
+    LOG(INFO) << " Section Type............................: "
+              << typeStr;
 //  if (p2Section->sh_type != 0L)
     {
-        LOG( INFO ) << " Section Name............................: "
-                    << &p2Strings[p2Section->sh_name];
-        LOG( INFO ) << " Section Flags...........................: "
-                    << isp::Elf32::sectionFlagsToString( str, p2Section->sh_flags );
-        LOG( INFO ) << " Section Virtual Address at Execution....: "
-                    << "0x" << hex << setw(8) << setfill('0')
-                    << p2Section->sh_addr;
-        LOG( INFO ) << " Section File Offset.....................: "
-                    << "0x" << hex << setw(8) << setfill('0')
-                    << p2Section->sh_offset;
-        LOG( INFO ) << " Section Size............................: "
-                    << "0x" << hex << setw(8) << setfill('0')
-                    << p2Section->sh_size;
-        LOG( INFO ) << " Section Link (to another section).......: "
-                    << "0x" << hex << setw(8) << setfill('0')
-                    << p2Section->sh_link;
-        LOG( INFO ) << " Section Information.....................: "
-                    << "0x" << hex << setw(8) << setfill('0')
-                    << p2Section->sh_info;
-        LOG( INFO ) << " Section Alignment.......................: "
-                    << p2Section->sh_addralign;
-        LOG( INFO ) << " Section Number of table entries.........: "
-                    << p2Section->sh_entsize;
+        LOG(INFO) << " Section Name............................: "
+                  << &p2Strings[p2Section->sh_name];
+        LOG(INFO) << " Section Flags...........................: "
+                  << isp::Elf32::sectionFlagsToString(str, p2Section->sh_flags);
+        LOG(INFO) << " Section Virtual Address at Execution....: "
+                  << "0x" << hex << setw(8) << setfill('0')
+                  << p2Section->sh_addr;
+        LOG(INFO) << " Section File Offset.....................: "
+                  << "0x" << hex << setw(8) << setfill('0')
+                  << p2Section->sh_offset;
+        LOG(INFO) << " Section Size............................: "
+                  << "0x" << hex << setw(8) << setfill('0')
+                  << p2Section->sh_size;
+        LOG(INFO) << " Section Link (to another section).......: "
+                  << "0x" << hex << setw(8) << setfill('0')
+                  << p2Section->sh_link;
+        LOG(INFO) << " Section Information.....................: "
+                  << "0x" << hex << setw(8) << setfill('0')
+                  << p2Section->sh_info;
+        LOG(INFO) << " Section Alignment.......................: "
+                  << p2Section->sh_addralign;
+        LOG(INFO) << " Section Number of table entries.........: "
+                  << p2Section->sh_entsize;
     }
     return;
 }
@@ -727,7 +727,7 @@ void isp::Elf32::section( Elf32_Shdr * p2Section, char * p2Strings )
 /// @brief      Calculate a checksum at the starting address for a
 ///             given number of 32-bit integers.
 ///
-uint32_t isp::Elf32::calculateChecksum( uint32_t * pAddress, size_t size)
+uint32_t isp::Elf32::calculateChecksum(uint32_t * pAddress, size_t size)
 {
     uint32_t checksum = 0;
 
@@ -739,12 +739,12 @@ uint32_t isp::Elf32::calculateChecksum( uint32_t * pAddress, size_t size)
     checksum = 0xffffffff - checksum + 1;
     if (pAddress[7] != checksum)
     {
-        LOG( INFO ) << "Updating checksum from 0x"
-                    << hex << setw(8) << setfill('0')
-                    << pAddress[7]
-                    << " to 0x"
-                    << hex << setw(8) << setfill('0')
-                    << checksum;
+        LOG(INFO) << "Updating checksum from 0x"
+                  << hex << setw(8) << setfill('0')
+                  << pAddress[7]
+                  << " to 0x"
+                  << hex << setw(8) << setfill('0')
+                  << checksum;
         m_isDirty = true;
         pAddress[7] = checksum;
     }

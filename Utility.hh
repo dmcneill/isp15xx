@@ -42,9 +42,9 @@ public:
     ///             The optional offset to be added to the printout for the
     ///             address.
     ///
-    static void hexDump( const uint8_t * psBlock,
-                         size_t ulSize,
-                         uint32_t offset = 0U );
+    static void hexDump(const uint8_t * psBlock,
+                        size_t ulSize,
+                        uint32_t offset = 0U);
 
 
     ///
@@ -56,7 +56,7 @@ public:
     /// @return     Integer value for the string; set to neg one
     ///             on error.
     ///
-    static int stringToInt( std::string& str );
+    static int stringToInt(std::string& str);
 
     ///
     /// @brief      Convert an ASCII hex string to a byte vector.
@@ -67,8 +67,8 @@ public:
     /// @param[in]  bytes
     ///             The byte vector to fill in with the raw data.
     ///
-    static void stringToByte( const std::string& input,
-                              std::vector<uint8_t>& bytes);
+    static void stringToByte(const std::string& input,
+                             std::vector<uint8_t>& bytes);
     ///
     /// @brief      Get a random number.
     ///
@@ -96,7 +96,7 @@ public:
     ///
     /// @return     A reference to the trimmed string.
     ///
-    static std::string& leftTrim( std::string& str );
+    static std::string& leftTrim(std::string& str);
 
     ///
     /// @brief      Trim the spaces from the right side.
@@ -106,7 +106,7 @@ public:
     ///
     /// @return     A reference to the trimmed string.
     ///
-    static std::string& rightTrim( std::string& str );
+    static std::string& rightTrim(std::string& str);
 
     ///
     /// @brief      Trim the spaces on both sides.
@@ -131,9 +131,9 @@ public:
     /// @param[out] vec
     ///             The resultant string vector.
     ///
-    static void split( const std::string& str,
-                       const char * delimiter,
-                       std::vector<std::string>& vec);
+    static void split(const std::string& str,
+                      const char * delimiter,
+                      std::vector<std::string>& vec);
 
     ///
     /// @brief      Get the substring starting just beyond the matching
@@ -340,7 +340,7 @@ private:
     /// @param[in]  utility     Reference to the Utility object
     ///                         to be copied.
     ///
-    Utility( const Utility& utility ) = delete;
+    Utility(const Utility& utility) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -350,7 +350,7 @@ private:
     /// @param[in]  utility     Reference to the Utility object
     ///                         to be copied.
     ///
-    Utility& operator = ( const Utility& utility ) = delete;
+    Utility& operator = (const Utility& utility) = delete;
 
     ///
     /// @brief      Utility class destructor.

@@ -18,8 +18,8 @@ static  tLogLevel   gLogLevel = INFO;
 //  @brief      Log default constructor.
 //
 isp::Log::Log()
-      : m_stream( &std::cout ),
-        m_messageLevel( WARNING )
+      : m_stream(&std::cout),
+        m_messageLevel(WARNING)
 {}
 
 
@@ -44,11 +44,11 @@ tLogLevel& isp::Log::ReportingLevel()
 //
 //  @brief      Convert the log level to a string.
 //
-const std::string isp::Log::ToString( tLogLevel level )
+const std::string isp::Log::ToString(tLogLevel level)
 {
 
-    if( level >= TRACE &&
-        level <= ERROR )
+    if (level >= TRACE &&
+        level <= ERROR)
     {
         static const char * levelTable[] =
         {
@@ -73,7 +73,7 @@ const std::string isp::Log::NowTime()
     struct tm  tm;
     char       buf[80];
 
-    tm = *localtime( &now );
+    tm = *localtime(&now);
     strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tm );
     return buf;
 }
@@ -82,7 +82,7 @@ const std::string isp::Log::NowTime()
 //
 //  @brief      Get the output stream instance.
 //
-std::ostream& isp::Log::Get( tLogLevel level )
+std::ostream& isp::Log::Get(tLogLevel level)
 {
     *m_stream << NowTime();
     *m_stream << " "  << ToString(level) << ": ";

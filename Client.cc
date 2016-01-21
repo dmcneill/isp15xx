@@ -28,9 +28,9 @@ extern  uint8_t     gMemory[];
 //
 //  @brief      Test the client ISP interface.
 //
-isp::ISP::Error isp::eraseClient( const char * device, const unsigned syncRetries )
+isp::ISP::Error isp::eraseClient(const char * device, const unsigned syncRetries)
 {
-    LOG( INFO ) << "Entering " << __func__ << "()";
+    LOG(INFO) << "Entering " << __func__ << "()";
 
     isp::Serial     serial(device);
     isp::ISP        isp(serial, gIsActiveLowReset, gIsVerbose);
@@ -38,19 +38,19 @@ isp::ISP::Error isp::eraseClient( const char * device, const unsigned syncRetrie
 
     do
     {
-        for( unsigned retries = syncRetries; retries > 0; --retries )
+        for (unsigned retries = syncRetries; retries > 0; --retries)
         {
             // Enter ISP programming mode.
             isp.programMode();
 
-            if( gQuit == true)
+            if (gQuit == true)
                 break;
 
             // Synchronize to the target
-            if(( error = isp.synchronize()))
+            if ((error = isp.synchronize()))
             {
                 LOG(WARNING) << "Initial synchronization failed: " << error;
-                if( retries )
+                if (retries)
                 {
                     LOG(INFO) << "Retrying synchronization...";
                     continue;
@@ -62,14 +62,14 @@ isp::ISP::Error isp::eraseClient( const char * device, const unsigned syncRetrie
             }
         }
 
-        if( error != isp::ISP::ERR_ISP_NO_ERROR )
+        if (error != isp::ISP::ERR_ISP_NO_ERROR)
         {
             LOG(ERROR) << "Synchronization failed -- ABORTING";
             break;
         }
 
         // Setup the baud rate
-        if(( error = isp.setBaudRate( 115200 )))
+        if ((error = isp.setBaudRate(115200)))
         {
             LOG(ERROR) << "Error in setting baud rate: " << error;
             break;
@@ -77,14 +77,14 @@ isp::ISP::Error isp::eraseClient( const char * device, const unsigned syncRetrie
 
         // Target chip ID
         uint32_t chip = 0U;
-        if(( error = isp.queryId( chip )))
+        if ((error = isp.queryId(chip)))
         {
             LOG(ERROR) << "Error in querying chip ID: " << error;
             break;
         }
 
         // Unlock flash
-        if(( error = isp.unlockFlash() ))
+        if ((error = isp.unlockFlash()))
         {
             LOG(ERROR) << "Error in unlocking flash: " << error;
             break;
@@ -104,9 +104,9 @@ isp::ISP::Error isp::eraseClient( const char * device, const unsigned syncRetrie
         };
 
         LOG(INFO) << "Blank check...";
-        for( unsigned ii = 0; ii < 64; ++ii )
+        for (unsigned ii = 0; ii < 64; ++ii)
         {
-            error = isp.blankCheckSector( ii, sectorMap );
+            error = isp.blankCheckSector(ii, sectorMap);
             LOG(INFO) << "Sector " << ii << " is " << (sectorMap[ii]? "blank": "NOT-BLANK");
         }
 
@@ -114,40 +114,40 @@ isp::ISP::Error isp::eraseClient( const char * device, const unsigned syncRetrie
         gEndSector = 63;
 
         // Now start to program....
-        for( int32_t sector = gEndSector; sector >= 0; --sector )
+        for (int32_t sector = gEndSector; sector >= 0; --sector)
         {
             do
             {
                 // Unlock flash
-                if(( error = isp.unlockFlash( isp::ISP::SHORT_TIMEOUT )))
+                if ((error = isp.unlockFlash(isp::ISP::SHORT_TIMEOUT)))
                 {
                     LOG(ERROR) << "Error in unlocking flash: " << error;
                     break;
                 }
 
                 // If the sector is not blank, erase it.
-                if( !sectorMap[ sector ] )
+                if (!sectorMap[ sector ])
                 {
                     // Prepare sectors for writing
-                    if(( error = isp.prepareSectors( sector, sector, isp::ISP::MEDIUM_TIMEOUT )))
+                    if ((error = isp.prepareSectors(sector, sector, isp::ISP::MEDIUM_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error preparing sectors: " << error;
                         break;
                     }
 
                     // Erase flash
-                    if(( error = isp.eraseSectors( sector, sector, isp::ISP::LONG_TIMEOUT )))
+                    if ((error = isp.eraseSectors(sector, sector, isp::ISP::LONG_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error erasing sectors: " << error;
                         break;
                     }
                 }
 
-            } while( false );
+            } while (false);
         }
     } while (false);
 
-    LOG( INFO ) << "Leaving eraseClient: errorCode is " << error;
+    LOG(INFO) << "Leaving eraseClient: errorCode is " << error;
 
     isp.applicationMode();
     return error;
@@ -157,29 +157,29 @@ isp::ISP::Error isp::eraseClient( const char * device, const unsigned syncRetrie
 //
 //  @brief      Test the client ISP interface.
 //
-isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetries )
+isp::ISP::Error isp::programClient(const char * device, const unsigned syncRetries)
 {
     isp::Serial     serial(device);
     isp::ISP        isp(serial, gIsActiveLowReset, gIsVerbose);
     isp::ISP::Error error = isp::ISP::ERR_ISP_NO_ERROR;
 
-    LOG( INFO ) << "Entering " << __func__ << "()";
+    LOG(INFO) << "Entering " << __func__ << "()";
 
     do
     {
-        for( unsigned retries = syncRetries; retries > 0; --retries )
+        for (unsigned retries = syncRetries; retries > 0; --retries)
         {
             // Enter ISP programming mode.
             isp.programMode();
 
-            if( gQuit == true)
+            if (gQuit == true)
                 break;
 
             // Synchronize to the target
-            if(( error = isp.synchronize()))
+            if ((error = isp.synchronize()))
             {
                 LOG(WARNING) << "Initial synchronization failed: " << error;
-                if( retries )
+                if (retries)
                 {
                     LOG(INFO) << "Retrying synchronization...";
                     continue;
@@ -191,14 +191,14 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
             }
         }
 
-        if( error != isp::ISP::ERR_ISP_NO_ERROR )
+        if (error != isp::ISP::ERR_ISP_NO_ERROR)
         {
             LOG(ERROR) << "Synchronization failed -- ABORTING";
             break;
         }
 
         // Setup the baud rate
-        if(( error = isp.setBaudRate( 115200 )))
+        if ((error = isp.setBaudRate(115200)))
         {
             LOG(ERROR) << "Error in setting baud rate: " << error;
             break;
@@ -206,7 +206,7 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
 
         // Target chip ID
         uint32_t chip = 0U;
-        if(( error = isp.queryId( chip )))
+        if ((error = isp.queryId(chip)))
         {
             LOG(ERROR) << "Error in querying chip ID: " << error;
             break;
@@ -226,38 +226,38 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
         };
 
         LOG(INFO) << "Blank check...";
-        for( unsigned ii = gStartSector; ii <= gEndSector; ++ii )
+        for (unsigned ii = gStartSector; ii <= gEndSector; ++ii)
         {
-            error = isp.blankCheckSector( ii, sectorMap );
+            error = isp.blankCheckSector(ii, sectorMap);
             LOG(INFO) << "Sector " << ii << " is " << (sectorMap[ii]? "blank": "NOT-BLANK");
         }
 
         LOG(INFO) << "Programming flash...";
 
         // Now start to program...
-        for( int32_t sector = gEndSector; sector >= 0; --sector )
+        for (int32_t sector = gEndSector; sector >= 0; --sector)
         {
             do
             {
                 // Unlock flash
-                if(( error = isp.unlockFlash( isp::ISP::SHORT_TIMEOUT )))
+                if ((error = isp.unlockFlash(isp::ISP::SHORT_TIMEOUT)))
                 {
                     LOG(ERROR) << "Error in unlocking flash: " << error;
                     break;
                 }
 
                 // If the sector is not blank, erase it.
-                if( !sectorMap[ sector ] )
+                if (!sectorMap[ sector ])
                 {
                     // Prepare sectors for writing
-                    if(( error = isp.prepareSectors( sector, sector, isp::ISP::MEDIUM_TIMEOUT )))
+                    if ((error = isp.prepareSectors(sector, sector, isp::ISP::MEDIUM_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error preparing sectors: " << error;
                         break;
                     }
 
                     // Erase flash
-                    if(( error = isp.eraseSectors( sector, sector, isp::ISP::LONG_TIMEOUT )))
+                    if ((error = isp.eraseSectors(sector, sector, isp::ISP::LONG_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error erasing sectors: " << error;
                         break;
@@ -268,7 +268,7 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
                 for (int32_t ram = FLASH_SECTOR_SIZE - RAM_SECTOR_SIZE; ram >= 0; ram -= RAM_SECTOR_SIZE )
                 {
                     // Disable echo
-                    if(( error = isp.echo( false, isp::ISP::MEDIUM_TIMEOUT )))
+                    if ((error = isp.echo(false, isp::ISP::MEDIUM_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error in setting echo: " << error;
                         break;
@@ -276,14 +276,14 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
 
                     size_t offset = (sector * FLASH_SECTOR_SIZE + ram);
                     {
-                        std::vector<uint8_t> ramBytes( &gMemory[offset],
-                                                       &gMemory[offset + (RAM_SECTOR_SIZE / 2)] );
+                        std::vector<uint8_t> ramBytes(&gMemory[offset],
+                                                      &gMemory[offset + (RAM_SECTOR_SIZE / 2)]);
 
                         // Now write the RAM with the data to program
-                        if(( error = isp.writeMemory( RAM_PROGRAM_ADDRESS,
-                                                      (RAM_SECTOR_SIZE / 2),
-                                                      ramBytes,
-                                                      isp::ISP::LONG_TIMEOUT )))
+                        if ((error = isp.writeMemory(RAM_PROGRAM_ADDRESS,
+                                                     (RAM_SECTOR_SIZE / 2),
+                                                     ramBytes,
+                                                     isp::ISP::LONG_TIMEOUT)))
                         {
                             LOG(ERROR) << "Error in writing memory: " << error;
                             break;
@@ -292,14 +292,14 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
 
                     offset += (RAM_SECTOR_SIZE / 2);
                     {
-                        std::vector<uint8_t> ramBytes( &gMemory[offset],
-                                                       &gMemory[offset + (RAM_SECTOR_SIZE / 2)] );
+                        std::vector<uint8_t> ramBytes(&gMemory[offset],
+                                                      &gMemory[offset + (RAM_SECTOR_SIZE / 2)]);
 
                         // Now write the RAM with the data to program
-                        if(( error = isp.writeMemory( RAM_PROGRAM_ADDRESS + (RAM_SECTOR_SIZE / 2),
-                                                      (RAM_SECTOR_SIZE / 2),
-                                                      ramBytes,
-                                                      isp::ISP::LONG_TIMEOUT )))
+                        if ((error = isp.writeMemory(RAM_PROGRAM_ADDRESS + (RAM_SECTOR_SIZE / 2),
+                                                     (RAM_SECTOR_SIZE / 2),
+                                                     ramBytes,
+                                                     isp::ISP::LONG_TIMEOUT)))
                         {
                             LOG(ERROR) << "Error in writing memory: " << error;
                             break;
@@ -307,21 +307,21 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
                     }
 
                     // Enable echo
-                    if(( error = isp.echo( true, isp::ISP::MEDIUM_TIMEOUT )))
+                    if ((error = isp.echo(true, isp::ISP::MEDIUM_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error in setting echo: " << error;
                         break;
                     }
 
                     // Unlock flash
-                    if(( error = isp.unlockFlash( isp::ISP::MEDIUM_TIMEOUT ) ))
+                    if ((error = isp.unlockFlash(isp::ISP::MEDIUM_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error in unlocking flash: " << error;
                         break;
                     }
 
                     // Prepare sectors for writing
-                    if(( error = isp.prepareSectors( sector, sector, isp::ISP::MEDIUM_TIMEOUT )))
+                    if ((error = isp.prepareSectors(sector, sector, isp::ISP::MEDIUM_TIMEOUT)))
                     {
                         LOG(ERROR) << "Error preparing sectors: " << error;
                         break;
@@ -332,9 +332,9 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
                     LOG(INFO) << "Writing flash at 0x"
                               << std::setw(8) << std::setfill('0') << std::hex << flashAddress;
 
-                    if(( error = isp.copyToFlash( flashAddress,
-                                                  RAM_PROGRAM_ADDRESS,
-                                                  RAM_SECTOR_SIZE,
+                    if ((error = isp.copyToFlash(flashAddress,
+                                                 RAM_PROGRAM_ADDRESS,
+                                                 RAM_SECTOR_SIZE,
                                                   isp::ISP::LONG_TIMEOUT )))
                     {
                         LOG(ERROR) << "Error on copy to flash: " << error;
@@ -342,15 +342,15 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
                     }
                 }
 
-            } while( false );
+            } while (false);
         }
 
-        if( error == isp::ISP::ERR_ISP_NO_ERROR )
+        if (error == isp::ISP::ERR_ISP_NO_ERROR)
             LOG(INFO) << "Programming flash success!";
 
     } while (false);
 
-    LOG( INFO ) << "Leaving " << __func__ << "(): errorCode is " << error;
+    LOG(INFO) << "Leaving " << __func__ << "(): errorCode is " << error;
     isp.applicationMode();
     return error;
 }
@@ -359,9 +359,9 @@ isp::ISP::Error isp::programClient( const char * device, const unsigned syncRetr
 //
 //  @brief      Test the client ISP interface.
 //
-isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetries )
+isp::ISP::Error isp::examineClient(const char * device, const unsigned syncRetries)
 {
-    LOG( INFO ) << "Entering " << __func__ << "()";
+    LOG(INFO) << "Entering " << __func__ << "()";
 
     isp::Serial     serial(device);
     isp::ISP        isp(serial, gIsActiveLowReset, gIsVerbose);
@@ -369,19 +369,19 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
 
     do
     {
-        for( unsigned retries = syncRetries; retries > 0; --retries )
+        for (unsigned retries = syncRetries; retries > 0; --retries)
         {
             // Enter ISP programming mode.
             isp.programMode();
 
-            if( gQuit == true)
+            if (gQuit == true)
                 break;
 
             // Synchronize to the target
-            if(( error = isp.synchronize()))
+            if ((error = isp.synchronize()))
             {
                 LOG(WARNING) << "Initial synchronization failed: " << error;
-                if( retries )
+                if (retries)
                 {
                     LOG(INFO) << "Retrying synchronization...";
                     continue;
@@ -393,14 +393,14 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
             }
         }
 
-        if( error != isp::ISP::ERR_ISP_NO_ERROR )
+        if (error != isp::ISP::ERR_ISP_NO_ERROR)
         {
             LOG(ERROR) << "Synchronization failed -- ABORTING";
             break;
         }
 
         // Setup the baud rate
-        if(( error = isp.setBaudRate( 115200 )))
+        if ((error = isp.setBaudRate(115200)))
         {
             LOG(ERROR) << "Error in setting baud rate: " << error;
             break;
@@ -408,7 +408,7 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
 
         // Target chip ID
         uint32_t chip = 0U;
-        if(( error = isp.queryId( chip )))
+        if ((error = isp.queryId(chip)))
         {
             LOG(ERROR) << "Error in querying chip ID: " << error;
             break;
@@ -421,7 +421,7 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
         LOG(INFO) << "Verifying...";
 
         // Now start to read the memory...
-        for( uint32_t sector = gStartSector; sector <= gEndSector; ++sector )
+        for (uint32_t sector = gStartSector; sector <= gEndSector; ++sector)
         {
             do
             {
@@ -433,18 +433,18 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
                         std::vector<uint8_t> ramBytes;
 
                         // Now write the RAM with the data to program
-                        if(( error = isp.readMemory( offset, (RAM_SECTOR_SIZE / 2), ramBytes )))
+                        if ((error = isp.readMemory(offset, (RAM_SECTOR_SIZE / 2), ramBytes)))
                         {
                             LOG(ERROR) << "Error in reading memory: " << error;
                             break;
                         }
                         else
                         {
-                            for( unsigned ii = 0; ii < ramBytes.size(); ++ii )
+                            for (unsigned ii = 0; ii < ramBytes.size(); ++ii)
                                 memBlock[ offset + ii ] = ramBytes.data()[ ii ];
 
-                            if( gIsVerbose )
-                                isp::Utility::hexDump( ramBytes.data(), ramBytes.size(), offset );
+                            if (gIsVerbose)
+                                isp::Utility::hexDump(ramBytes.data(), ramBytes.size(), offset);
                         }
                     }
 
@@ -453,31 +453,31 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
                         std::vector<uint8_t> ramBytes;
 
                         // Now write the RAM with the data to program
-                        if(( error = isp.readMemory( offset, (RAM_SECTOR_SIZE / 2), ramBytes )))
+                        if ((error = isp.readMemory(offset, (RAM_SECTOR_SIZE / 2), ramBytes)))
                         {
                             LOG(ERROR) << "Error in writing memory: " << error;
                             break;
                         }
                         else
                         {
-                            for( unsigned ii = 0; ii < ramBytes.size(); ++ii )
+                            for (unsigned ii = 0; ii < ramBytes.size(); ++ii)
                                 memBlock[ offset + ii ] = ramBytes.data()[ ii ];
 
-                            if( gIsVerbose )
-                                isp::Utility::hexDump( ramBytes.data(), ramBytes.size(), offset );
+                            if (gIsVerbose)
+                                isp::Utility::hexDump(ramBytes.data(), ramBytes.size(), offset);
                         }
                     }
                 }
 
-                if( error != isp::ISP::ERR_ISP_NO_ERROR )
+                if (error != isp::ISP::ERR_ISP_NO_ERROR)
                     break;
 
-            } while( false );
+            } while (false);
         }
 
-        for( unsigned ii = gStartAddress; ii < gEndAddress; ++ii )
+        for (unsigned ii = gStartAddress; ii < gEndAddress; ++ii)
         {
-            if( gMemory[ ii ] != memBlock[ ii ])
+            if (gMemory[ ii ] != memBlock[ ii ])
             {
                 LOG(ERROR) << "Mismatch at address 0x"
                            << std::setw(8) << std::setfill('0') << std::hex << ii;
@@ -486,10 +486,10 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
             }
         }
 
-        if( error == isp::ISP::ERR_ISP_NO_ERROR )
+        if (error == isp::ISP::ERR_ISP_NO_ERROR)
             LOG(INFO) << "Verify success!";
 
-        if( memBlock )
+        if (memBlock)
         {
             delete[] memBlock;
             memBlock = nullptr;
@@ -497,7 +497,7 @@ isp::ISP::Error isp::examineClient( const char * device, const unsigned syncRetr
 
     } while (false);
 
-    LOG( INFO ) << "Leaving " << __func__ << "(): errorCode is " << error;
+    LOG(INFO) << "Leaving " << __func__ << "(): errorCode is " << error;
 
     isp.applicationMode();
     return error;

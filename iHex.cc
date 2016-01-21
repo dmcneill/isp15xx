@@ -17,12 +17,12 @@
 //
 //  @brief      Explicit class constructor.
 //
-isp::iHex::iHex( const char * filename, uint8_t * pMemory, size_t size )
-      : mFilename( filename ),
-        mOffsetAddress( 0U ),
-        mStartAddress( size ),
-        mEndAddress( 0U ),
-        mpMemory( pMemory )
+isp::iHex::iHex(const char * filename, uint8_t * pMemory, size_t size)
+      : mFilename(filename),
+        mOffsetAddress(0U),
+        mStartAddress(size),
+        mEndAddress(0U),
+        mpMemory(pMemory)
 {}
 
 
@@ -41,7 +41,7 @@ bool isp::iHex::parse()
     bool        result = false;
 
     // Open the stream
-    if( mFilename.length())
+    if (mFilename.length())
     {
         std::ifstream inFile(mFilename.c_str());
         if (inFile.is_open())
@@ -57,10 +57,10 @@ bool isp::iHex::parse()
 
                 // Remove the leading ':' and trailing '\n'
                 std::string trimmedLine = line.substr(1);
-                isp::Utility::cutLast( trimmedLine );
+                isp::Utility::cutLast(trimmedLine);
 
                 // Process the line
-                if (!process( trimmedLine ))
+                if (!process(trimmedLine))
                     break;
             }
             inFile.close();
@@ -82,7 +82,7 @@ bool isp::iHex::process(std::string& line)
 
     do
     {
-        Utility::stringToByte(const_cast<const std::string&>( line ), bytes );
+        Utility::stringToByte(const_cast<const std::string&>(line), bytes);
 
         unsigned count    = bytes[0];
         unsigned address  = ((bytes[1] << 8) | bytes[2]);
@@ -91,16 +91,16 @@ bool isp::iHex::process(std::string& line)
         unsigned checksum = 0;
 
         // Parse the data
-        for( unsigned ii = 0; ii < count; ++ii )
-            data.push_back( bytes[4 + ii]);
+        for (unsigned ii = 0; ii < count; ++ii)
+            data.push_back(bytes[4 + ii]);
 
         // Calculate the checksum
-        for( unsigned ii = 0; ii < bytes.size() - 1; ++ii )
+        for (unsigned ii = 0; ii < bytes.size() - 1; ++ii)
             checksum += bytes[ii];
         checksum = (~(checksum - 1) & 0xFF);
 
         // See if we got a match
-        if( checksum != cksum)
+        if (checksum != cksum)
         {
             std::cerr << "Error checksum mismatch - inline: 0x"
                       << std::hex << cksum
@@ -116,12 +116,12 @@ bool isp::iHex::process(std::string& line)
         {
             case 0: // Data
             {
-                if( address < mStartAddress )
+                if (address < mStartAddress)
                     mStartAddress = address;
-                if( (address + count - 1) > mEndAddress )
+                if ((address + count - 1) > mEndAddress)
                     mEndAddress = (address + count - 1);
 
-                for( unsigned ii = 0; ii < data.size(); ++ii )
+                for (unsigned ii = 0; ii < data.size(); ++ii)
                     mpMemory[ mOffsetAddress + address + ii] = data[ ii ];
             }
             break;
@@ -141,7 +141,7 @@ bool isp::iHex::process(std::string& line)
             case 2: // Extended Segment Address
             {
                 // Data contains segment address
-                if( count == 2)
+                if (count == 2)
                 {
                     mOffsetAddress = ((data[0] << 8) | data[1]) << 4;
                 }
@@ -150,7 +150,7 @@ bool isp::iHex::process(std::string& line)
 
             case 3: // Start Segment Address
             {
-                if( count == 4)
+                if (count == 4)
                 {
                     uint32_t start = ((data[0] << 8) | data[1]) << 4;
                     start += ((data[2] << 8) | data[3]);
@@ -160,7 +160,7 @@ bool isp::iHex::process(std::string& line)
 
             case 4: // Extended Linear Address
             {
-                if( count == 2)
+                if (count == 2)
                 {
                     mOffsetAddress = ((data[0] << 8) | data[1]) << 16;
                 }
@@ -169,7 +169,7 @@ bool isp::iHex::process(std::string& line)
 
             case 5: // Start Linear Address
             {
-                if( count == 4)
+                if (count == 4)
                 {
                     uint32_t start = ((data[0] << 8) | data[1]) << 16;
                     start |= ((data[2] << 8) | data[3]);
@@ -188,10 +188,10 @@ bool isp::iHex::process(std::string& line)
 //
 void isp::iHex::doChecksum()
 {
-    uint32_t * pAddress = reinterpret_cast<uint32_t *>( mpMemory );
+    uint32_t * pAddress = reinterpret_cast<uint32_t *>(mpMemory);
     uint32_t checksum = 0U;
 
-    for( unsigned ii = 0; ii < 7; ++ii )
+    for (unsigned ii = 0; ii < 7; ++ii)
         checksum += *(pAddress + ii);
     pAddress[7] = (~checksum + 1);
 }

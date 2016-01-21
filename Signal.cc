@@ -23,22 +23,20 @@
 //
 isp::Signal::Signal(
              int number,
-             tSigFunc callback )
-      : m_number( number ),
-        m_Func( callback )
+             tSigFunc callback)
+      : m_number(number),
+        m_Func(callback)
 {
-    if( m_Func )
+    if (m_Func)
     {
         m_action.sa_handler = callback;
-        sigemptyset( &m_action.sa_mask );
+        sigemptyset(&m_action.sa_mask);
         m_action.sa_flags = 0;
 
-        if( 0 != sigaction( m_number,
-                            &m_action,
-                            NULL ))
+        if (0 != sigaction(m_number, &m_action, NULL))
         {
-            LOG( ERROR ) << "*** Error setting signal: "
-                         << m_number;
+            LOG(ERROR) << "*** Error setting signal: "
+                       << m_number;
         }
     }
 }
@@ -48,16 +46,16 @@ isp::Signal::Signal(
 //  @brief      Set the default to handle the UNIX signal.
 //
 isp::Signal::Signal(
-             int number )
-      : m_number( number ),
-        m_Func( NULL )
+             int number)
+      : m_number(number),
+        m_Func(NULL)
 {
-    if( m_Func )
+    if (m_Func)
     {
-        if( SIG_ERR == signal( m_number, SIG_DFL ))
+        if (SIG_ERR == signal(m_number, SIG_DFL))
         {
-            LOG( ERROR ) << "*** Error resetting signal: "
-                         << m_number;
+            LOG(ERROR) << "*** Error resetting signal: "
+                       << m_number;
         }
     }
 }
@@ -68,12 +66,12 @@ isp::Signal::Signal(
 //
 isp::Signal::~Signal()
 {
-    if( m_Func )
+    if (m_Func)
     {
-        if( SIG_ERR == signal( m_number, SIG_DFL ))
+        if (SIG_ERR == signal(m_number, SIG_DFL))
         {
-            LOG( ERROR ) << "*** Error resetting signal: "
-                         << m_number;
+            LOG(ERROR) << "*** Error resetting signal: "
+                       << m_number;
         }
     }
 }

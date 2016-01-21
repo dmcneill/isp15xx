@@ -16,12 +16,12 @@
 //
 //  @brief      Explicit constructor for the Serial class.
 //
-isp::Serial::Serial( const char * pDevice,
-                     int          controlFlags,
-                     int          inputFlags)
-            : mError( 0 ),
-              mIsOpen( false ),
-              mFileDes( -1 )
+isp::Serial::Serial(const char * pDevice,
+                    int controlFlags,
+                    int inputFlags)
+            : mError(0),
+              mIsOpen(false),
+              mFileDes(-1)
 {
     do
     {
@@ -36,17 +36,17 @@ isp::Serial::Serial( const char * pDevice,
         }
 
         // Flush out the old tty
-        tcflush( mFileDes, TCOFLUSH );
-        tcflush( mFileDes, TCIFLUSH );
+        tcflush(mFileDes, TCOFLUSH);
+        tcflush(mFileDes, TCIFLUSH);
 
         // Set the file descriptor for non-blocking
-        fcntl( mFileDes, F_SETFL, fcntl( mFileDes, F_GETFL) & ~O_NONBLOCK);
+        fcntl(mFileDes, F_SETFL, fcntl(mFileDes, F_GETFL) & ~O_NONBLOCK);
 
         //  Save the old terminal settings.
         tcgetattr(mFileDes, &mOldSettings) ;
 
         //  Setup new termIO attributes...
-        bzero( &mNewSettings, sizeof( mNewSettings ));
+        bzero(&mNewSettings, sizeof(mNewSettings));
         mNewSettings.c_cflag = controlFlags;        // Baud rate
         mNewSettings.c_cflag |= CS8;                // 8-bit data
         mNewSettings.c_cflag |= CLOCAL;             // Ignore modem control lines
@@ -59,7 +59,7 @@ isp::Serial::Serial( const char * pDevice,
         mNewSettings.c_oflag = 0;                   // No post processing
         mNewSettings.c_lflag = 0;
 
-        cfmakeraw( &mNewSettings );
+        cfmakeraw(&mNewSettings);
 
         //  Non-canonical mode- read will wait until VMIN characters
         //  can be read and then return that number of characters.  Zero
@@ -74,7 +74,7 @@ isp::Serial::Serial( const char * pDevice,
         //  IMMEDIATELY
         tcsetattr(mFileDes, TCSANOW, &mNewSettings);
         mIsOpen = true;
-    } while( false );
+    } while (false);
 }
 
 
@@ -103,10 +103,10 @@ isp::Serial::~Serial()
 //
 //  @brief      Read an input buffer from the Serial port.
 //
-ssize_t isp::Serial::read( char * buffer,
-                           size_t size,
-                           unsigned timeInMS,
-                           unsigned& readTime )
+ssize_t isp::Serial::read(char * buffer,
+                          size_t size,
+                          unsigned timeInMS,
+                          unsigned& readTime)
 {
     ssize_t result = -1;
     ssize_t bytesRead = 0;
@@ -114,13 +114,13 @@ ssize_t isp::Serial::read( char * buffer,
 
     do
     {
-        if( !mIsOpen )
+        if (!mIsOpen)
             break;
 
-        if( !pBuffer )
+        if (!pBuffer)
             break;
 
-        if( size == 0 )
+        if (size == 0)
             break;
 
         fd_set fdSet;
@@ -129,16 +129,16 @@ ssize_t isp::Serial::read( char * buffer,
 
         while (timeout)
         {
-            FD_ZERO( &fdSet );
-            FD_SET( mFileDes, &fdSet);
+            FD_ZERO(&fdSet);
+            FD_SET(mFileDes, &fdSet);
             struct timeval tv = { 0U, 1000U };
 
-            result = select( mFileDes + 1, &fdSet, NULL, NULL, &tv);
-            if ( result > 0)
+            result = select(mFileDes + 1, &fdSet, NULL, NULL, &tv);
+            if (result > 0)
             {
-                if ( FD_ISSET( mFileDes, &fdSet) )
+                if (FD_ISSET(mFileDes, &fdSet))
                 {
-                    result = ::read( mFileDes, pBuffer, size );
+                    result = ::read(mFileDes, pBuffer, size);
                     if (result < 0)
                     {
                         mError = -errno;
@@ -173,7 +173,7 @@ ssize_t isp::Serial::read( char * buffer,
                 timeout--;
             }
         }
-    } while( false );
+    } while (false);
 
     if (!result && bytesRead)
         result = bytesRead;
@@ -188,7 +188,7 @@ ssize_t isp::Serial::read( char * buffer,
 ssize_t isp::Serial::read(std::string& str,
                           unsigned timeoutInMS,
                           unsigned& readTime,
-                          bool isVerbose )
+                          bool isVerbose)
 {
     ssize_t result = -1;
     ssize_t bytesRead = 0;
@@ -196,14 +196,14 @@ ssize_t isp::Serial::read(std::string& str,
 
     do
     {
-        if( !mIsOpen )
+        if (!mIsOpen)
             break;
 
-        if( size == 0 )
+        if (size == 0)
             break;
 
         char * pBuffer = new char[ size + 1 ];
-        if( !pBuffer )
+        if (!pBuffer)
         {
             mError = -ENOMEM;
             break;
@@ -211,13 +211,13 @@ ssize_t isp::Serial::read(std::string& str,
 
         do
         {
-            result = read( pBuffer, size, timeoutInMS, readTime );
+            result = read(pBuffer, size, timeoutInMS, readTime);
             if (result > 0 )
             {
-                LOG( TRACE ) << "Result: " << result  << "  Read time: " << readTime
-                             << " ms  timeout: " << timeoutInMS << " ms";
-                if( isVerbose )
-                    Utility::hexDump( reinterpret_cast<const uint8_t *>( pBuffer ), result );
+                LOG(TRACE) << "Result: " << result  << "  Read time: " << readTime
+                           << " ms  timeout: " << timeoutInMS << " ms";
+                if (isVerbose)
+                    Utility::hexDump(reinterpret_cast<const uint8_t *>(pBuffer), result);
                 pBuffer[result] = '\0';
                 str += pBuffer;
                 pBuffer[0] = '\0';
@@ -228,7 +228,7 @@ ssize_t isp::Serial::read(std::string& str,
         delete[] pBuffer;
         pBuffer = NULL;
 
-    } while( false );
+    } while (false);
 
     return bytesRead;
 }
@@ -248,14 +248,14 @@ ssize_t isp::Serial::read(std::vector<uint8_t>& bVector,
 
     do
     {
-        if( !mIsOpen )
+        if (!mIsOpen)
             break;
 
-        if( size == 0 )
+        if (size == 0)
             break;
 
         char * pBuffer = new char[ size + 1 ];
-        if( !pBuffer )
+        if (!pBuffer)
         {
             mError = -ENOMEM;
             break;
@@ -263,18 +263,18 @@ ssize_t isp::Serial::read(std::vector<uint8_t>& bVector,
 
         do
         {
-            result = read( pBuffer, size, timeoutInMS, readTime );
+            result = read(pBuffer, size, timeoutInMS, readTime);
             if (result > 0 )
             {
 
-                LOG( TRACE ) << "Result: " << result  << "  Read time: " << readTime
-                             << " ms  timeout: " << timeoutInMS << " ms";
-                if( isVerbose )
-                    Utility::hexDump( reinterpret_cast<const uint8_t *>( pBuffer ), result );
+                LOG(TRACE) << "Result: " << result  << "  Read time: " << readTime
+                           << " ms  timeout: " << timeoutInMS << " ms";
+                if (isVerbose)
+                    Utility::hexDump(reinterpret_cast<const uint8_t *>(pBuffer), result);
                 pBuffer[result] = '\0';
-                for( int ii = 0; ii < result; ++ii )
+                for (int ii = 0; ii < result; ++ii)
                 {
-                    bVector.push_back( static_cast<uint8_t>( pBuffer[ii]));
+                    bVector.push_back(static_cast<uint8_t>(pBuffer[ii]));
                 }
                 bytesRead += result;
             }
@@ -283,7 +283,7 @@ ssize_t isp::Serial::read(std::vector<uint8_t>& bVector,
         delete[] pBuffer;
         pBuffer = NULL;
 
-    } while( false );
+    } while (false);
 
     return bytesRead;
 }
@@ -292,27 +292,27 @@ ssize_t isp::Serial::read(std::vector<uint8_t>& bVector,
 //
 //  @brief      Write an output buffer to the Serial port.
 //
-ssize_t isp::Serial::write( const char * pBuffer, size_t size )
+ssize_t isp::Serial::write(const char * pBuffer, size_t size)
 {
     ssize_t result = -1;
 
     do
     {
-        if( !mIsOpen )
+        if (!mIsOpen)
             break;
 
-        if( !pBuffer )
+        if (!pBuffer)
             break;
 
-        if( size == 0 )
+        if (size == 0)
             break;
 
-        result = ::write( mFileDes, pBuffer, size);
+        result = ::write(mFileDes, pBuffer, size);
         if (result < 0)
         {
             mError = -errno;
         }
-    } while( false );
+    } while (false);
 
     return result;
 }
@@ -321,23 +321,23 @@ ssize_t isp::Serial::write( const char * pBuffer, size_t size )
 //
 //  @brief      Write an output string to the Serial port.
 //
-ssize_t isp::Serial::write( const std::string& str )
+ssize_t isp::Serial::write(const std::string& str)
 {
     ssize_t result = -1;
 
     do
     {
-        if( !mIsOpen )
+        if (!mIsOpen)
             break;
 
         const char * pBuffer = str.c_str();
 
-        result = ::write( mFileDes, pBuffer, str.length());
+        result = ::write(mFileDes, pBuffer, str.length());
         if (result < 0)
         {
             mError = -errno;
         }
-    } while( false );
+    } while (false);
 
     return result;
 }
@@ -346,26 +346,26 @@ ssize_t isp::Serial::write( const std::string& str )
 //
 //  @brief      Write an output byte-vector to the Serial port.
 //
-ssize_t isp::Serial::write( const std::vector<uint8_t>& vec )
+ssize_t isp::Serial::write(const std::vector<uint8_t>& vec)
 {
     ssize_t result = -1;
 
     do
     {
-        if( !mIsOpen )
+        if (!mIsOpen)
             break;
 
-        if( !vec.size() )
+        if (!vec.size())
             break;
 
         const uint8_t * pVector = vec.data();
 
-        result = ::write( mFileDes, pVector, vec.size());
+        result = ::write(mFileDes, pVector, vec.size());
         if (result < 0)
         {
             mError = -errno;
         }
-    } while( false );
+    } while (false);
 
     return result;
 }

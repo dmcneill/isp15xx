@@ -33,7 +33,7 @@ namespace isp {
 /// @return     The error code for the operation where zero is success and
 ///             any other value is an error.
 ///
-extern ISP::Error eraseClient( const char * device, unsigned syncRetries );
+extern ISP::Error eraseClient(const char * device, unsigned syncRetries);
 
 ///
 /// @brief      Program the target through the ISP client interface.
@@ -47,7 +47,7 @@ extern ISP::Error eraseClient( const char * device, unsigned syncRetries );
 /// @return     The error code for the operation where zero is success and
 ///             any other value is an error.
 ///
-extern ISP::Error programClient( const char * device, unsigned syncRetries );
+extern ISP::Error programClient(const char * device, unsigned syncRetries);
 
 ///
 /// @brief      Examine target memory through the ISP client interface.
@@ -61,7 +61,7 @@ extern ISP::Error programClient( const char * device, unsigned syncRetries );
 /// @return     The error code for the operation where zero is success and
 ///             any other value is an error.
 ///
-extern ISP::Error examineClient( const char * device, unsigned syncRetries );
+extern ISP::Error examineClient(const char * device, unsigned syncRetries);
 
 } // namespace
 #endif

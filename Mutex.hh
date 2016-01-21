@@ -34,7 +34,7 @@ public:
     /// @param[in]  obj         Reference to the template class
     ///                         object of type T.
     ///
-    Lock( T &obj ) : m_obj( obj ) { m_obj.lock(); }
+    Lock(T &obj) : m_obj(obj) { m_obj.lock(); }
 
     ///
     /// @brief      Lock destructor
@@ -80,7 +80,7 @@ private:
     /// @param[in]  rlock       Reference to the Lock Object
     ///                         to be copied.
     ///
-    Lock( const Lock& rlock ) = delete;
+    Lock(const Lock& rlock) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -90,7 +90,7 @@ private:
     /// @param[in]  rlock       Reference to the Lock Object
     ///                         to be copied.
     ///
-    Lock& operator = ( const Lock& rlock ) = delete;
+    Lock& operator = (const Lock& rlock) = delete;
 
     ///
     /// @brief      Address of operator
@@ -168,7 +168,7 @@ public:
     /// @details    Show the state of the mutex.
     ///
     ///
-    void show() { LOG( INFO ) << "RefCount: " << m_RefCount; }
+    void show() { LOG(INFO) << "RefCount: " << m_RefCount; }
 
 private:
     ///
@@ -179,7 +179,7 @@ private:
     /// @param[in]  mutex       Reference to the Mutex object
     ///                         to be copied.
     ///
-    Mutex( const Mutex& mutex ) = delete;
+    Mutex(const Mutex& mutex) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -189,7 +189,7 @@ private:
     /// @param[in]  mutex       Reference to the Mutex object
     ///                         to be copied.
     ///
-    Mutex& operator = ( const Mutex& mutex ) = delete;
+    Mutex& operator = (const Mutex& mutex) = delete;
 
     //  Data members
     pthread_mutex_t m_Mutex;
@@ -227,7 +227,7 @@ public:
     /// @param[in]  cond        Reference to the Condition
     ///                         object to be copied.
     ///
-    Condition( const Condition& cond );
+    Condition(const Condition& cond);
 
     ///
     /// @brief      Assignment operator
@@ -237,7 +237,7 @@ public:
     /// @param[in]  cond        Reference to the Condition
     ///                         object to be copied.
     ///
-    Condition& operator = ( const Condition& cond );
+    Condition& operator = (const Condition& cond);
 
     ///
     /// @brief      Wait on a condition object.
@@ -252,7 +252,7 @@ public:
     ///
     /// @return     Boolean true on success and false on error.
     ///
-    bool wait( Mutex& mutex );
+    bool wait(Mutex& mutex);
 
     ///
     /// @brief      Signal a condition object.

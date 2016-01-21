@@ -27,7 +27,7 @@ public:
     ///
     /// @param[in]  memSize     The size of the output block in bytes.
     ///
-    Elf32( std::string& filename, uint8_t * pMemory, size_t memSize );
+    Elf32(std::string& filename, uint8_t * pMemory, size_t memSize);
 
     ///
     /// @brief      Elf32 destructor.
@@ -43,7 +43,7 @@ public:
     ///
     /// @return     Boolean true on success and false on error.
     ///
-    bool parse( bool isCheck, bool isDebug );
+    bool parse(bool isCheck, bool isDebug);
 
     ///
     /// @brief      See if the ELF file needs to be written.
@@ -96,7 +96,7 @@ public:
     ///
     /// @return     The newly aligned address.
     ///
-    uint32_t alignAddress( uint32_t address, unsigned align );
+    uint32_t alignAddress(uint32_t address, unsigned align);
 
     ///
     /// @brief      Convert integer value to string.
@@ -107,7 +107,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& intToString ( std::string& str, int type );
+    static std::string& intToString(std::string& str, int type);
 
     ///
     /// @brief      Convert section-type integer value to string.
@@ -118,7 +118,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& sectionType ( std::string& str, unsigned type );
+    static std::string& sectionType(std::string& str, unsigned type);
 
     ///
     /// @brief      Convert class-type integer value to string.
@@ -129,7 +129,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& classToString ( std::string& str, int classType );
+    static std::string& classToString(std::string& str, int classType);
 
     ///
     /// @brief      Convert encoding-type integer value to string.
@@ -140,7 +140,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& encodingToString ( std::string& str, int encoding );
+    static std::string& encodingToString(std::string& str, int encoding);
 
     ///
     /// @brief      Convert version integer value to string.
@@ -151,7 +151,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& versionToString ( std::string& str, int version );
+    static std::string& versionToString(std::string& str, int version);
 
     ///
     /// @brief      Convert OS-ABI integer value to string.
@@ -162,7 +162,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& osABItoString ( std::string& str, int osABI );
+    static std::string& osABItoString(std::string& str, int osABI);
 
     ///
     /// @brief      Convert type integer value to string.
@@ -173,7 +173,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& typeToString ( std::string& str, int type );
+    static std::string& typeToString(std::string& str, int type);
 
     ///
     /// @brief      Convert machine-type integer value to string.
@@ -184,7 +184,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& machineToString ( std::string& str, int machine );
+    static std::string& machineToString(std::string& str, int machine);
 
     ///
     /// @brief      Convert section-flags integer value to string.
@@ -195,12 +195,12 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& flagsToString ( std::string& str, int flags );
+    static std::string& flagsToString(std::string& str, int flags);
 
     ///
     /// @brief      Convert program-type integer value to string.
     ///
-    static std::string& programTypeToString ( std::string& str, int type );
+    static std::string& programTypeToString(std::string& str, int type);
 
     ///
     /// @brief      Convert program-flags integer value to string.
@@ -211,7 +211,7 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& programFlagsToString ( std::string& str, int flags );
+    static std::string& programFlagsToString(std::string& str, int flags);
 
     ///
     /// @brief      Convert section-flags integer value to string.
@@ -222,21 +222,21 @@ public:
     ///
     /// @return     The reference to the output string.
     ///
-    static std::string& sectionFlagsToString ( std::string& str, int flags );
+    static std::string& sectionFlagsToString(std::string& str, int flags);
 
     ///
     /// @brief      Display the ELF file header content.
     ///
     /// @param[in]  p2Header    The ELF32 file header staring address in memory.
     ///
-    static void elfHeader ( Elf32_Ehdr * p2Header );
+    static void elfHeader(Elf32_Ehdr * p2Header);
 
     ///
     /// @brief      Display the ELF file program content.
     ///
     /// @param[in]  p2Header    The ELF32 program header staring address in memory.
     ///
-    static void program ( Elf32_Phdr * p2Program );
+    static void program(Elf32_Phdr * p2Program);
 
     ///
     /// @brief      Display the ELF section header content.
@@ -245,7 +245,7 @@ public:
     ///
     /// @param[in]  p2Strings   Pointer to the name string table in memory.
     ///
-    static void section ( Elf32_Shdr * p2Section, char * p2Strings );
+    static void section(Elf32_Shdr * p2Section, char * p2Strings);
 
 private:
     ///
@@ -264,7 +264,7 @@ private:
     /// @param[in]  elf32       Reference to the Elf32 object
     ///                         to be copied.
     ///
-    Elf32( const Elf32& elf32 ) = delete;
+    Elf32(const Elf32& elf32) = delete;
 
     ///
     /// @brief      Assignment operator
@@ -274,7 +274,7 @@ private:
     /// @param[in]  elf32       Reference to the Elf32 object
     ///                         to be copied.
     ///
-    Elf32& operator = ( const Elf32& elf32 ) = delete;
+    Elf32& operator = (const Elf32& elf32) = delete;
 
     ///
     /// @brief      Calculate a checksum at the starting address for a
@@ -286,7 +286,7 @@ private:
     ///
     /// @return     The checksum 32-bit value.
     ///
-    uint32_t calculateChecksum ( uint32_t * pAddress, size_t size );
+    uint32_t calculateChecksum(uint32_t * pAddress, size_t size);
 
     // Data members
     std::string     m_filename;

@@ -32,7 +32,7 @@ public:
     ///
     /// @details    Instantiate the CmdLine class for command-line parsing.
     ///
-    CmdLine( int argc, char * const * argv);
+    CmdLine(int argc, char * const * argv);
 
     ///
     /// @brief      CmdLine destructor.
@@ -53,7 +53,7 @@ public:
     ///
     /// @returns    Boolean true on success and false on error.
     ///
-    bool find( const char * input, size_t& index );
+    bool find(const char * input, size_t& index);
 
     ///
     /// @brief      Get the nth string from the command line option list.
@@ -67,7 +67,7 @@ public:
     ///
     /// @returns    Boolean true on success and false on error.
     ///
-    bool get( size_t index, std::string& option );
+    bool get(size_t index, std::string& option);
 
 private:
     ///
@@ -78,7 +78,7 @@ private:
     /// @param[in]  ref
     ///             Reference to a CmdLine instance to copy from.
     ///
-    CmdLine( const CmdLine& ref ) = delete;
+    CmdLine(const CmdLine& ref) = delete;
 
     ///
     /// @brief      CmdLine assignment operator (not-assignable)
@@ -90,7 +90,7 @@ private:
     ///
     /// @return     New instance for the left-hand side of the expression.
     ///
-    CmdLine& operator = ( const CmdLine& ref ) = delete;
+    CmdLine& operator = (const CmdLine& ref) = delete;
 
     // Data elements
     std::vector<std::string>    list;

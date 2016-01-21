@@ -68,7 +68,7 @@ public:
     ///
     /// @return     The reference to the standard output stream in use.
     ///
-    std::ostream& Get( tLogLevel level = INFO );
+    std::ostream& Get(tLogLevel level = INFO);
 
     ///
     /// @brief      Get the reporting log level.
@@ -87,7 +87,7 @@ private:
     ///
     /// @param[in]  log             Reference to the log instance to copy.
     ///
-    Log( const Log& log ) = delete;
+    Log(const Log& log) = delete;
 
     ///
     /// @brief      Log assignment operator.
@@ -115,7 +115,7 @@ private:
     ///
     /// @return     A string object containing the formatted level string.
     ///
-    const std::string ToString( tLogLevel level );
+    const std::string ToString(tLogLevel level);
 
     //  Data members
     std::ostream *  m_stream;

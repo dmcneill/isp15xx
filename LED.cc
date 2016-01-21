@@ -30,19 +30,19 @@ extern  bool    gNoGPIO;
 /// @brief      Default constructor for the LED class.
 ///
 isp::LED::LED()
-        : mFileDes( -1 ),
-          mCycle( 8U ),
-          mCounter( 0U )
+        : mFileDes(-1),
+          mCycle(8U),
+          mCounter(0U)
 {
-    if( gNoGPIO != true )
+    if (gNoGPIO != true)
     {
-        mFileDes = hwSignalOpen( LED_SIGNAL );
-        if( mFileDes < 0 )
+        mFileDes = hwSignalOpen(LED_SIGNAL);
+        if (mFileDes < 0)
         {
-            LOG( ERROR ) << "Cannot open LED signal";
+            LOG(ERROR) << "Cannot open LED signal";
             return;
         }
-        hwSignalSet( mFileDes, LED_SIGNAL, false );
+        hwSignalSet(mFileDes, LED_SIGNAL, false);
     }
 }
 
@@ -52,10 +52,10 @@ isp::LED::LED()
 ///
 isp::LED::~LED()
 {
-    if( gNoGPIO != true )
+    if (gNoGPIO != true)
     {
-        hwSignalSet( mFileDes, LED_SIGNAL, true );
-        hwSignalClose( mFileDes, LED_SIGNAL );
+        hwSignalSet(mFileDes, LED_SIGNAL, true);
+        hwSignalClose(mFileDes, LED_SIGNAL);
     }
 }
 
@@ -63,11 +63,11 @@ isp::LED::~LED()
 ///
 /// @brief      Default destructor for the LED class.
 ///
-void isp::LED::Set( bool value )
+void isp::LED::Set(bool value)
 {
-    if( gNoGPIO != true )
+    if (gNoGPIO != true)
     {
-        hwSignalSet( mFileDes, LED_SIGNAL, value );
+        hwSignalSet(mFileDes, LED_SIGNAL, value);
     }
 }
 
@@ -75,19 +75,19 @@ void isp::LED::Set( bool value )
 //
 //  @brief      Open up a HW signal for access.
 //
-int isp::LED::hwSignalOpen( const char * signal )
+int isp::LED::hwSignalOpen(const char * signal)
 {
     int fd = -1;
 
-    if( gNoGPIO != true )
+    if (gNoGPIO != true)
     {
         fd = open(signal, O_WRONLY);
 
         if (fd < 0)
         {
-            LOG( ERROR ) << "Open failed for signal '"
-                         << signal
-                         << "' -- " << errno << " " << strerror(errno);
+            LOG(ERROR) << "Open failed for signal '"
+                       << signal
+                       << "' -- " << errno << " " << strerror(errno);
         }
     }
     return fd;
@@ -97,8 +97,8 @@ int isp::LED::hwSignalOpen( const char * signal )
 //
 //  @brief      Close down a HW signal from access.
 //
-void isp::LED::hwSignalClose( int fd,
-                              const char * signal )
+void isp::LED::hwSignalClose(int fd,
+                             const char * signal)
 {
     if (fd >= 0)
     {
@@ -106,9 +106,9 @@ void isp::LED::hwSignalClose( int fd,
 
         if (result < 0)
         {
-            LOG( ERROR ) << "Close failed for signal '"
-                         << signal
-                         << "' -- " << errno << " " << strerror(errno);
+            LOG(ERROR) << "Close failed for signal '"
+                       << signal
+                       << "' -- " << errno << " " << strerror(errno);
         }
     }
 }
@@ -117,20 +117,20 @@ void isp::LED::hwSignalClose( int fd,
 //
 //  @brief      Set a signal to a given state.
 //
-void isp::LED::hwSignalSet( int fd,
-                            const char * signal,
-                            bool value )
+void isp::LED::hwSignalSet(int fd,
+                           const char * signal,
+                           bool value)
 {
     if (fd >= 0)
     {
         std::string vString = (value? "1\n": "0\n" );
 
-        int result = ::write( fd, vString.c_str(), vString.size() );
+        int result = ::write(fd, vString.c_str(), vString.size());
         if (result < 0)
         {
-            LOG( ERROR ) << "Write failed for signal '"
-                         << signal
-                         << "' -- " << errno << " " << strerror(errno);
+            LOG(ERROR) << "Write failed for signal '"
+                       << signal
+                       << "' -- " << errno << " " << strerror(errno);
 
         }
     }

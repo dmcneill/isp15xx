@@ -43,7 +43,7 @@ public:
     /// @param[in]  value
     ///             The boolean value to use on the LED.
     ///
-    void Set( bool value );
+    void Set(bool value);
 
     ///
     /// @brief      Cycle the LED.
@@ -59,7 +59,7 @@ private:
     /// @param[in]  ref
     ///             Reference to an ISP instance to copy from.
     ///
-    LED( const LED& ref ) = delete;
+    LED(const LED& ref) = delete;
 
     ///
     /// @brief      ISP assignment operator (not-assignable)
@@ -71,7 +71,7 @@ private:
     ///
     /// @return     New instance for the left-hand side of the expression.
     ///
-    LED& operator = ( const LED& ref ) = delete;
+    LED& operator = (const LED& ref) = delete;
 
     ///
     /// @brief      Open up a HW signal for access.
@@ -82,7 +82,7 @@ private:
     ///
     /// @return     The signal's file descriptor on success or neg on on error.
     ///
-    int hwSignalOpen( const char * signal );
+    int hwSignalOpen(const char * signal);
 
     ///
     /// @brief      Close down a HW signal from access.
@@ -94,8 +94,8 @@ private:
     ///             The signal name string to use to access the signal
     ///             through GPIO.
     ///
-    void hwSignalClose( int fd,
-                        const char * signal );
+    void hwSignalClose(int fd,
+                       const char * signal);
 
     ///
     /// @brief      Set a signal to a given state.
@@ -110,9 +110,9 @@ private:
     /// @param[in]  value
     ///             The boolean value to use on the signal.
     ///
-    void hwSignalSet( int fd,
-                      const char * signal,
-                      bool value );
+    void hwSignalSet(int fd,
+                     const char * signal,
+                     bool value);
 
     // Data members
     int             mFileDes;

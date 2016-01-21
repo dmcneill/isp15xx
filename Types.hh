@@ -32,7 +32,7 @@ typedef enum
 ///
 /// @brief  Template type definitions to support TR-069 messages.
 ///
-typedef std::vector<std::string>                            tStringVector;
-typedef std::map<std::string,std::string>                   tStringMap;
+typedef std::vector<std::string>            tStringVector;
+typedef std::map<std::string,std::string>   tStringMap;
 } // namespace
 #endif

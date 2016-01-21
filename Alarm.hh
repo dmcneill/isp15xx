@@ -34,7 +34,7 @@ public:
     /// @param[in]  callback    The function for the callback; must be
     ///                         of the type tSigFunc.
     ///
-    Alarm( int seconds, tSigFunc callback );
+    Alarm(int seconds, tSigFunc callback);
 
     ///
     /// @brief      Set a callback on the SIGALRM.
@@ -46,7 +46,7 @@ public:
     ///
     /// @param[in]  timeInMS    The number of milliseconds for the alarm
     ///
-    Alarm( tSigFunc callback, int timeInMS );
+    Alarm(tSigFunc callback, int timeInMS);
 
     ///
     /// @brief      Alarm destructor
@@ -73,7 +73,7 @@ private:
     /// @param[in]  alarm
     ///             Reference to an alarm instance to copy from.
     ///
-    Alarm( const Alarm& alarm ) = delete;
+    Alarm(const Alarm& alarm) = delete;
 
     ///
     /// @brief      Alarm assignment operator (not-assignable)
@@ -85,7 +85,7 @@ private:
     ///
     /// @return     New instance for the left-hand side of the expression.
     ///
-    Alarm& operator = ( const Alarm& alarm ) = delete;
+    Alarm& operator = (const Alarm& alarm) = delete;
 
     ///  Data members
     int m_Seconds;
