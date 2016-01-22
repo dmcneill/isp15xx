@@ -7,13 +7,101 @@
 ///
 #ifndef ELF32_HH
 #define ELF32_HH
-#include <string>
 #include <fstream>
+#include <map>
+#include <string>
+#include <vector>
 #include "elf.h"
 
 // Namespace
 namespace isp {
 
+typedef std::vector<uint8_t> ByteVec;
+
+class Section
+{
+public:
+    ///
+    /// @brief      Section constructor.
+    ///
+    /// @param[in]  name        The section name.
+    ///
+    /// @param[in]  size        Size of the section in bytes.
+    ///
+    /// @param[in]  startAddr   Start address of the section on chip.
+    ///
+    /// @param[in]  alignment   The start address alignment.
+    ///
+    /// @param[in]  pMemory     Pointer to byte memory to copy data from.
+    ///
+    Section(const char * name,
+            size_t size,
+            uint32_t startAddress,
+            uint32_t alignment,
+            uint8_t * pMemory)
+        : m_Name(name),
+          m_StartAddress(startAddr),
+          m_Alignment(alignment),
+          m_Size(size)
+    {
+        m_Vector.resize(size);
+
+        ::memcpy(m_Vector.data(), pMemory, size);
+    }
+
+    ///
+    /// @brief      Section destructor.
+    ///
+    ///
+    virtual ~Section() {}
+
+    ///
+    /// @brief      Get the section's name.
+    ///
+    /// @return     The constant character string for the name.
+    ///
+    const char * getName() { return m_Name.c_str(); }
+
+    ///
+    /// @brief      Get the section's size in bytes.
+    ///
+    /// @return     The size of the data for the section in bytes.
+    ///
+    size_t getSize() { return m_Size; }
+
+    ///
+    /// @brief      Get the start address for the section.
+    ///
+    /// @return     The start address as a 32-bit unsigned int.
+    ///
+    uint32_t getStartAddress() { return m_StartAddress; }
+
+    ///
+    /// @brief      Get the alignment for the section.
+    ///
+    /// @return     The byte-alignment setting for the section.
+    ///
+    uint32_t getAlignment() { return m_Alignment; }
+
+    ///
+    /// @brief      Get the data block for the section.
+    ///
+    /// @return     The constant pointer to the start of the section data.
+    ///
+    uint8_t const * getData() { return m_Vector.data(); }
+
+private:
+    //  Data members
+    std::string m_Name;
+    uint32_t    m_StartAddress;
+    uint32_t    m_Alignment;
+    size_t      m_Size;
+    ByteVec     m_Vector;
+    
+};
+
+
+typedef std::map<std::string, Section> SecMap;
 
 class Elf32
 {
@@ -282,11 +370,23 @@ private:
     ///
     /// @param[in]  p2Address   The 32-bit address to start from.
     ///
-    /// @param[in]  size        The number of 32-bit integers to check.
-    ///
     /// @return     The checksum 32-bit value.
     ///
-    uint32_t calculateChecksum(uint32_t * pAddress, size_t size);
+    uint32_t calculateChecksum(uint32_t * pAddress);
+
+    ///
+    /// @brief      Place the named section in the memory at a given
+    ///             order.
+    ///
+    /// @param[in]  sectionMap  The section map reference to use.
+    ///
+    /// @param[in]  sectionName The key string for the section to use.
+    ///
+    /// @param[in]  isFirst     Flag to denote the first section.
+    ///
+    void orderSection(SecMap& sectionMap,
+                      const char * sectionName,
+                      bool isFirst);
 
     // Data members
     std::string     m_filename;

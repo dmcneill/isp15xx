@@ -31,7 +31,8 @@
 #define NO_OPTION       (0)
 #define ERASE_OPTION    (1)
 #define PROGRAM_OPTION  (2)
-#define EXAMINE_OPTION  (4)
+#define TEST_OPTION     (4)
+#define EXAMINE_OPTION  (8)
 
 
 //  Global variables
@@ -370,6 +371,13 @@ static void doCommandLine(
             index = -1;
         }
 
+        if (cmdLine.find("--test", index) ||
+            cmdLine.find("-t", index))
+        {
+            gOption |= TEST_OPTION;
+            index = -1;
+        }
+
         if (cmdLine.find("--reset", index) ||
             cmdLine.find("-r", index))
         {
@@ -426,6 +434,7 @@ int main(int argc,
             error = isp::ISP_INVALID_ARGUMENT;
     }
     else if ((gOption & PROGRAM_OPTION) ||
+             (gOption & TEST_OPTION)    ||
              (gOption & EXAMINE_OPTION))
     {
         if ((gSerialDevice.length() == 0) || (gInputFilename.length() == 0))
@@ -454,6 +463,7 @@ int main(int argc,
                 std::cerr << " where:"                                              << std::endl;
                 std::cerr << "  --erase    | -e    Erase the flash"                 << std::endl;
                 std::cerr << "  --program  | -p    Program the flash"               << std::endl;
+                std::cerr << "  --test     | -t    Program the flash (dry-run)"     << std::endl;
                 std::cerr << "  --device   | -d    Serial port device name"         << std::endl;
                 std::cerr << "  --filename | -f    Intel Hex filename"              << std::endl;
                 std::cerr << " OPTIONS:"                                            << std::endl;
@@ -510,7 +520,9 @@ int main(int argc,
             }
         }
 
-        if ((gOption & PROGRAM_OPTION) || (gOption & EXAMINE_OPTION))
+        if ((gOption & PROGRAM_OPTION) ||
+            (gOption & TEST_OPTION)    ||
+            (gOption & EXAMINE_OPTION))
         {
             // Start the file thread
             std::future<int> fileThread = std::async(fileWorker, gInputFilename.c_str());

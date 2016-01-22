@@ -25,7 +25,7 @@ RM = rm -f
 CXX = g++
 LDFLAGS = -L/usr/local/lib -lpthread
 
-CFLAGS = $(OPT) -std=c++0x -Wall -Wextra -Wno-unused-parameter \
+CFLAGS = $(OPT) -std=c++11 -Wall -Wextra -Wno-unused-parameter \
  -Wshadow -Wpointer-arith -Wcast-qual -Wformat-security \
  -Werror=format-security -Werror=format -DLINUX
 

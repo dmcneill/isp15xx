@@ -75,6 +75,7 @@ isp::Elf32::~Elf32()
 bool isp::Elf32::parse(bool isCheck, bool isDebug)
 {
     Elf32_Ehdr *    p2Header = (Elf32_Ehdr *) m_pBuffer;
+    SecMap          sectionMap;
     int             i;
 
     if (p2Header->e_ident[4] == 0 ||
@@ -97,70 +98,83 @@ bool isp::Elf32::parse(bool isCheck, bool isDebug)
                              p2Header->e_shentsize));
     char * p2Strings = ((char *) m_pBuffer + p2StrTab->sh_offset);
 
-
+    // Generate the map of sections we're interested in
     for (i = 0; i < p2Header->e_shnum; i++)
     {
-        if ((i != p2Header->e_shstrndx) &&
-            (p2Section->sh_type != 0))
+        if ((i != p2Header->e_shstrndx) && (p2Section->sh_type != 0))
         {
             if (isDebug)
                 isp::Elf32::section(p2Section, p2Strings);
 
-            switch (p2Section->sh_type)
+            if (p2Section->sh_size && (p2Section->sh_flags & SHF_ALLOC))
             {
-                case SHT_PROGBITS:
-                    if (p2Section->sh_size && (p2Section->sh_flags & SHF_ALLOC))
-                    {
-                        if (!strncmp(&p2Strings[p2Section->sh_name], ".text", 5))
-                        {
-                            m_StartAddress = p2Section->sh_addr;
-                            m_EndAddress   = p2Section->sh_addr + p2Section->sh_size - 1;
-
-                            LOG(INFO) << "Start: 0x" << hex << setw(8) << setfill('0')
-                                        << m_StartAddress
-                                        << "  End: 0x" << hex << setw(8) << setfill('0')
-                                        << m_EndAddress;
-
-                            if (isCheck)
-                            {
-                                uint32_t checksum = calculateChecksum(reinterpret_cast<uint32_t *>(m_pBuffer + p2Section->sh_offset),
-                                                                      p2Section->sh_size);
-                                LOG(INFO) << "CHECKSUM is 0x" << hex << setw(8) << setfill('0')
-                                            << checksum;
-                            }
-
-                            memcpy(m_pMemory + p2Section->sh_addr,
-                                   m_pBuffer + p2Section->sh_offset,
-                                   p2Section->sh_size );
-                        }
-
-                        if (!strncmp(&p2Strings[p2Section->sh_name], ".data", 5))
-                        {
-                            uint32_t mNextAddress = isp::Elf32::alignAddress(m_EndAddress, p2Section->sh_addralign);
-                            memcpy(m_pMemory + mNextAddress,
-                                   m_pBuffer + p2Section->sh_offset,
-                                   p2Section->sh_size);
-
-                            m_EndAddress = mNextAddress + p2Section->sh_size - 1;
-
-                            LOG(INFO) << "Start: 0x" << hex << setw(8) << setfill('0')
-                                      << m_StartAddress
-                                      << "  End: 0x" << hex << setw(8) << setfill('0')
-                                      << m_EndAddress;
-                        }
-                    }
-                    break;
-
-                case SHT_NOBITS:
-                    break;
-
-                default:
-                    break;
-            }
+                if (!strncmp(&p2Strings[p2Section->sh_name], ".text", 6) ||
+                    !strncmp(&p2Strings[p2Section->sh_name], ".data", 6) ||
+                    !strncmp(&p2Strings[p2Section->sh_name], ".ARM.extab", 11) ||
+                    !strncmp(&p2Strings[p2Section->sh_name], ".ARM.exidx", 11))
+                {
+                    Section sec(&p2Strings[p2Section->sh_name],
+                                p2Section->sh_size,
+                                p2Section->sh_addr,
+                                p2Section->sh_addralign,
+                                m_pBuffer + p2Section->sh_offset);
+                    sectionMap.insert(std::pair<std::string,Section>(sec.getName(), sec));
+                }
+            } 
         }
         p2Section = (Elf32_Shdr *) ((uint8_t *) p2Section + p2Header->e_shentsize);
     }
+
+    orderSection(sectionMap,      ".text",  true);
+    orderSection(sectionMap, ".ARM.extab", false);
+    orderSection(sectionMap, ".ARM.exidx", false);
+    orderSection(sectionMap,      ".data", false);
     return true;
+}
+
+
+///
+/// @brief      Place the named section in the memory at a given
+///             order.
+void isp::Elf32::orderSection(SecMap& sectionMap,
+                              const char * sectionName,
+                              bool isFirst)
+{
+    for (SecMap::iterator it = sectionMap.begin(); it != sectionMap.end(); ++it)
+    {
+        std::string name = it->first;
+
+        if (sectionName == name)
+        {
+            Section sec = it->second;
+            uint32_t nextAddress = sec.getStartAddress();
+
+            if (isFirst)
+                m_StartAddress = sec.getStartAddress();
+
+            if (name == ".data")
+                nextAddress = m_EndAddress + 1;
+
+            memcpy(m_pMemory + nextAddress,
+                   sec.getData(),
+                   sec.getSize());
+
+            // Needed to boot into the application
+            if (isFirst)
+                calculateChecksum(reinterpret_cast<uint32_t *>(m_pMemory + nextAddress));
+                
+            if (m_EndAddress < nextAddress + sec.getSize() - 1)
+                m_EndAddress = nextAddress + sec.getSize() - 1;
+
+            LOG(INFO) << setw(12) << setfill(' ')
+                      << sec.getName()
+                      << "  0x" << hex << setw(8) << setfill('0')
+                      << nextAddress
+                      << " --> "
+                      << "0x" << hex << setw(8) << setfill('0')
+                      << m_EndAddress;
+        }
+    }
 }
 
 
@@ -216,11 +230,11 @@ uint32_t isp::Elf32::alignAddress(uint32_t address, unsigned align)
     switch (align)
     {
         default:
-        case  1: newAddress = ((address - 1) +  1) & 0xFFFF; break;
-        case  2: newAddress = ((address - 1) +  2) & 0xFFFE; break;
-        case  4: newAddress = ((address - 1) +  4) & 0xFFFC; break;
-        case  8: newAddress = ((address - 1) +  8) & 0xFFF8; break;
-        case 16: newAddress = ((address - 1) + 16) & 0xFFF0; break;
+        case  1: newAddress = ((address - 1) +  1) & 0xFFFFFFFF; break;
+        case  2: newAddress = ((address - 1) +  2) & 0xFFFFFFFE; break;
+        case  4: newAddress = ((address - 1) +  4) & 0xFFFFFFFC; break;
+        case  8: newAddress = ((address - 1) +  8) & 0xFFFFFFF8; break;
+        case 16: newAddress = ((address - 1) + 16) & 0xFFFFFFF0; break;
     }
     return newAddress;
 }
@@ -727,7 +741,7 @@ void isp::Elf32::section(Elf32_Shdr * p2Section, char * p2Strings)
 /// @brief      Calculate a checksum at the starting address for a
 ///             given number of 32-bit integers.
 ///
-uint32_t isp::Elf32::calculateChecksum(uint32_t * pAddress, size_t size)
+uint32_t isp::Elf32::calculateChecksum(uint32_t * pAddress)
 {
     uint32_t checksum = 0;
 

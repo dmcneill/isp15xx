@@ -116,10 +116,11 @@ bool isp::iHex::process(std::string& line)
         {
             case 0: // Data
             {
-                if (address < mStartAddress)
+                if ((mOffsetAddress + address) < mStartAddress)
                     mStartAddress = address;
-                if ((address + count - 1) > mEndAddress)
-                    mEndAddress = (address + count - 1);
+
+                if ((mOffsetAddress + address + count - 1) > mEndAddress)
+                    mEndAddress = (mOffsetAddress + address + count - 1);
 
                 for (unsigned ii = 0; ii < data.size(); ++ii)
                     mpMemory[ mOffsetAddress + address + ii] = data[ ii ];
