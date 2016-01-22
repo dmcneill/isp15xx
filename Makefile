@@ -83,7 +83,7 @@ depend: .depend
 #-----------------------------------------------------
 install:
 	$(ECHO) "Installing"
-	$(SILENT)chgrp dialout $@
+	$(SILENT)chgrp dialout $(TARGET)
 	$(SILENT)cp ./isp15xx /usr/local/bin
 	$(SILENT)$(STRIP) /usr/local/bin/isp15xx
 	$(SILENT)chmod +x /usr/local/bin/isp15xx
