@@ -36,7 +36,7 @@ public:
     ///
     Section(const char * name,
             size_t size,
-            uint32_t startAddress,
+            uint32_t startAddr,
             uint32_t alignment,
             uint8_t * pMemory)
         : m_Name(name),
