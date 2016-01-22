@@ -125,13 +125,11 @@ public:
     ///
     /// @brief      Parse the ELF32 header.
     ///
-    /// @param[in]  isCheck     Boolean flag for examining the checksum.
-    ///
     /// @param[in]  isDebug     Boolean flag for verbosity.
     ///
     /// @return     Boolean true on success and false on error.
     ///
-    bool parse(bool isCheck, bool isDebug);
+    bool parse(bool isDebug);
 
     ///
     /// @brief      See if the ELF file needs to be written.

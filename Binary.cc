@@ -71,18 +71,14 @@ isp::Binary::~Binary()
 ///
 /// @brief      Parse the ELF32 header.
 ///
-bool isp::Binary::parse(bool isCheck, bool isDebug)
+bool isp::Binary::parse()
 {
     m_StartAddress = 0U;
     m_EndAddress   = m_Size - 1;
 
-    if (isCheck)
-    {
-        cout << "CHECKSUM is 0x" << hex << setw(8) << setfill('0')
-             << calculateChecksum(reinterpret_cast<uint32_t *>(m_pBuffer),
-                                  m_Size)
-             << endl;
-    }
+    cout << "CHECKSUM is 0x" << hex << setw(8) << setfill('0')
+         << calculateChecksum(reinterpret_cast<uint32_t *>(m_pBuffer))
+         << endl;
 
     memcpy(m_pMemory, m_pBuffer, m_Size);
     return true;
@@ -131,7 +127,7 @@ bool isp::Binary::write()
 /// @brief      Calculate a checksum at the starting address for a
 ///             given number of 32-bit integers.
 ///
-uint32_t isp::Binary::calculateChecksum(uint32_t * pAddress, size_t size)
+uint32_t isp::Binary::calculateChecksum(uint32_t * pAddress)
 {
     uint32_t checksum = 0;
 

@@ -36,13 +36,9 @@ public:
     ///
     /// @brief      Parse the Binary file..
     ///
-    /// @param[in]  isCheck     Boolean flag for examining the checksum.
-    ///
-    /// @param[in]  isDebug     Boolean flag for verbosity.
-    ///
     /// @return     Boolean true on success and false on error.
     ///
-    bool parse(bool isCheck, bool isDebug);
+    bool parse();
 
     ///
     /// @brief      See if the binary file needs to be written.
@@ -121,11 +117,9 @@ private:
     ///
     /// @param[in]  p2Address   The 32-bit address to start from.
     ///
-    /// @param[in]  size        The number of 32-bit integers to check.
-    ///
     /// @return     The checksum 32-bit value.
     ///
-    uint32_t calculateChecksum(uint32_t * pAddress, size_t size);
+    uint32_t calculateChecksum(uint32_t * pAddress);
 
     // Data members
     std::string     m_filename;

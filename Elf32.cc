@@ -72,7 +72,7 @@ isp::Elf32::~Elf32()
 ///
 /// @brief      Parse the ELF32 header.
 ///
-bool isp::Elf32::parse(bool isCheck, bool isDebug)
+bool isp::Elf32::parse(bool isDebug)
 {
     Elf32_Ehdr *    p2Header = (Elf32_Ehdr *) m_pBuffer;
     SecMap          sectionMap;

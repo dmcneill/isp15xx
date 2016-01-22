@@ -98,7 +98,7 @@ static int fileWorker(
         {
             isp::Elf32  elf(filenameStr, gMemory, sizeof(gMemory));
 
-            if (elf.read() && elf.parse(true, gIsVerbose))
+            if (elf.read() && elf.parse(gIsVerbose))
             {
                 gStartAddress =  elf.getStartAddress();
                 gEndAddress   =  elf.getEndAddress();
@@ -117,7 +117,7 @@ static int fileWorker(
         {
             isp::Binary binary(filenameStr, gMemory, sizeof(gMemory));
 
-            if (binary.read() && binary.parse(true, gIsVerbose))
+            if (binary.read() && binary.parse())
             {
                 gStartAddress =  binary.getStartAddress();
                 gEndAddress   =  binary.getEndAddress();
