@@ -32,7 +32,8 @@ extern  bool    gNoGPIO;
 isp::LED::LED()
         : mFileDes(-1),
           mCycle(8U),
-          mCounter(0U)
+          mCounter(0U),
+          mState(false)
 {
     if (gNoGPIO != true)
     {
@@ -61,14 +62,28 @@ isp::LED::~LED()
 
 
 ///
-/// @brief      Default destructor for the LED class.
+/// @brief      Set the LED to a given state.
 ///
 void isp::LED::Set(bool value)
 {
     if (gNoGPIO != true)
     {
         hwSignalSet(mFileDes, LED_SIGNAL, value);
+        mState = value;
     }
+}
+
+
+///
+/// @brief      Get the LED state.
+///
+bool isp::LED::Get()
+{
+    if (gNoGPIO != true)
+    {
+        return mState;
+    }
+    return false;
 }
 
 
@@ -81,7 +96,7 @@ int isp::LED::hwSignalOpen(const char * signal)
 
     if (gNoGPIO != true)
     {
-        fd = open(signal, O_WRONLY);
+        fd = open(signal, O_RDWR);
 
         if (fd < 0)
         {
@@ -135,7 +150,6 @@ void isp::LED::hwSignalSet(int fd,
         }
     }
 }
-
 
 
 //

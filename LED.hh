@@ -46,6 +46,14 @@ public:
     void Set(bool value);
 
     ///
+    /// @brief      Get the LED state.
+    ///
+    /// @return     The boolean value for the state; on is
+    ///             true and off is false.
+    ///
+    bool Get();
+
+    ///
     /// @brief      Cycle the LED.
     ///
     void cycle();
@@ -118,6 +126,7 @@ private:
     int             mFileDes;
     int             mCycle;
     int             mCounter;
+    bool            mState;
 };  // class
 
 } // namespace

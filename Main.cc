@@ -242,6 +242,13 @@ void alarmHandler(int event)
     switch (event)
     {
         case SIGALRM:
+            if (gLEDPtr)
+            {
+                if (gLEDPtr->Get())
+                    gLEDPtr->Set(false);
+                else
+                    gLEDPtr->Set(true);
+            }
             break;
 
         default:
@@ -496,7 +503,7 @@ int main(int argc,
     {
         isp::Signal sigInt(SIGINT, termHandler);
         isp::Signal sigTerm(SIGTERM, termHandler);
-        isp::Alarm  alarm(alarmHandler, 4U);
+        isp::Alarm  alarm(alarmHandler, 50U);
         isp::Signal sigPipe(SIGPIPE);
         bool        isDone = false;
 
